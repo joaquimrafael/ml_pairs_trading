@@ -1,0 +1,115 @@
+(.venv) joprieto@PC-Joca:~/ml_pairs_trading$ python run_trading_strategy.py --sl --sl_model tcn --data_path dataset/itau3_4_min.csv  --n_epochs 3
+2025-05-03 21:11:13.772885: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-05-03 21:11:14.630490: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+/home/joprieto/ml_pairs_trading/.venv/lib/python3.12/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+  | Name          | Type             | Params | Mode 
+-----------------------------------------------------------
+0 | criterion     | MSELoss          | 0      | train
+1 | train_metrics | MetricCollection | 0      | train
+2 | val_metrics   | MetricCollection | 0      | train
+3 | res_blocks    | ModuleList       | 174 K  | train
+-----------------------------------------------------------
+174 K     Trainable params
+0         Non-trainable params
+174 K     Total params
+0.698     Total estimated model params size (MB)
+46        Modules in train mode
+0         Modules in eval mode
+Epoch 2: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 48/48 [01:04<00:00,  0.74it/s, train_loss=0.00531, val_loss=0.000945]`Trainer.fit` stopped: `max_epochs=3` reached.                                                                                                                                                                                    
+Epoch 2: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 48/48 [01:04<00:00,  0.74it/s, train_loss=0.00531, val_loss=0.000945]
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+Predicting DataLoader 0: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 38/38 [00:59<00:00,  0.64it/s]
+/home/joprieto/ml_pairs_trading/run_trading_strategy.py:55: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+  plt.show()
+Prediction Error: {'RMSE': 0.0018142594248929573, 'MASE': 6.430288112080179, 'MAPE': 0.1704100172572925, 'sMAPE': 0.17048521466495617}
+
+
+_____Total Profits_____
+Total Profits - pure forcasting strategy = [59.2920397870755, 60.42923502929733, 71.36523915571227, 88.243822846521]
+Best Trade Threshold - pure forcasting strategy = 0.001
+Total Profits - mean reversion strategy = [184.59459225668994, 184.7691592438534, 133.79472241985158, 59.44547931159079]
+Best Trade Threshold - mean reversion strategy = 0.00025
+Total Profits - hybrid strategy = [119.33588892379534, 110.10121200079136, 79.3434023059141, 33.88959352564538]
+Best Trade Threshold - hybrid strategy = 0.0
+Total Profits - ground truth strategy = [665.9961628050161, 653.2236696084683, 502.3178716889338, 265.1936038830992]
+Best Trade Threshold - ground truth strategy = 0.0
+
+
+_____Profits per Trade_____
+Profits per Trade - pure forcasting strategy = [0.0015383348412701529, 0.001665589014340766, 0.002143679647824105, 0.0036559565333935864]
+Profits per Trade - mean reversion strategy = [0.0057111129341219586, 0.006734306201255728, 0.009325623643957035, 0.012317753690756484]
+Profits per Trade - hybrid strategy = [0.006990971817445538, 0.007981240449495568, 0.011373767532384475, 0.01621511651944755]
+Profits per Trade - ground truth strategy = [0.020605041854000868, 0.023808130247784682, 0.035014489870969875, 0.054951016138230245]
+
+
+_____Total Profits Statistics_____
+Total Profits Std Dev - pure forcasting strategy = [6.217035585145183, 5.747432312201161, 5.76468045912851, 5.200490683043545]
+Total Profits Std Error - pure forcasting strategy = [0.19659992743376462, 0.18174976804203624, 0.18229520233911284, 0.16445395508902397]
+Total Profits Confidence - pure forcasting strategy = [array([47.91066186, 72.07848102]), array([50.24890851, 72.6566018 ]), array([60.46433392, 82.58209003]), array([78.05673484, 98.64221092])]
+Total Profits Std Dev - mean reversion strategy = [5.839068423796801, 5.658124023091113, 5.217092821946449, 4.043083056523041]
+Total Profits Std Error - mean reversion strategy = [0.18464755632767216, 0.1789255919668306, 0.16497896081866065, 0.12785351227848102]
+Total Profits Confidence - mean reversion strategy = [array([173.51750303, 195.78955111]), array([174.25771046, 196.34730768]), array([123.59496998, 144.15796724]), array([51.90899914, 67.46066462])]
+Total Profits Std Dev - hybrid strategy = [4.95383340833588, 4.574980715063139, 4.047267871076632, 2.9364456103704684]
+Total Profits Std Error - hybrid strategy = [0.15665396719376334, 0.14467359310945324, 0.1279858477342287, 0.09285856353974034]
+Total Profits Confidence - hybrid strategy = [array([110.29641479, 129.61938383]), array([101.09031703, 119.14560382]), array([72.07915979, 87.72055946]), array([28.46038784, 39.81699701])]
+Total Profits Std Dev - ground truth strategy = [11.843629997403449, 11.362424618029948, 12.38074494314094, 11.09098126792318]
+Total Profits Std Error - ground truth strategy = [0.3745284655608901, 0.35931141534943334, 0.39151353149937224, 0.3507276229289944]
+Total Profits Confidence - ground truth strategy = [array([644.05350679, 689.54076556]), array([632.47288323, 675.9259567 ]), array([479.80206755, 527.04359664]), array([244.1337634 , 287.87321465])]
+
+
+_____Profits per Trade Statistics_____
+Profits per Trade Std Dev - pure forcasting strategy = [0.00015754337572438195, 0.00015536326250432247, 0.0001649392866510732, 0.0002199216757396747]
+Profits per Trade Std Error - pure forcasting strategy = [4.981958975607264e-06, 4.913017742282946e-06, 5.215838214607974e-06, 6.9545340217836754e-06]
+Profits per Trade Confidence Interval - pure forcasting strategy = [array([0.00123946, 0.00184871]), array([0.00136035, 0.00197312]), array([0.00183511, 0.00248665]), array([0.0032538 , 0.00411975])]
+Profits per Trade Std Dev - mean reversion strategy = [0.00018272918479404022, 0.0002098778917878672, 0.0003611970465110903, 0.00083330708973528]
+Profits per Trade Std Error - mean reversion strategy = [5.778404189349729e-06, 6.636921685640091e-06, 1.14220535110082e-05, 2.635148393929803e-05]
+Profits per Trade Confidence Interval - mean reversion strategy = [array([0.00536121, 0.00608141]), array([0.00629075, 0.00713835]), array([0.00862587, 0.01003945]), array([0.01079193, 0.01410673])]
+Profits per Trade Std Dev - hybrid strategy = [0.00029647335631126766, 0.00033811103761790276, 0.0006011635812219246, 0.0014323577995311362]
+Profits per Trade Std Error - hybrid strategy = [9.375310714982617e-06, 1.0692009809154445e-05, 1.901046163004911e-05, 4.52951307082525e-05]
+Profits per Trade Confidence Interval - hybrid strategy = [array([0.00643903, 0.00762176]), array([0.00733862, 0.00863977]), array([0.01023265, 0.01264479]), array([0.01345522, 0.01890558])]
+Profits per Trade Std Dev - ground truth strategy = [0.0003502214067841527, 0.0004095126759061969, 0.0008586641301108286, 0.0023903057350194343]
+Profits per Trade Std Error - ground truth strategy = [1.1074973307862686e-05, 1.2949927865739402e-05, 2.715334396237388e-05, 7.558810426824315e-05]
+Profits per Trade Confidence Interval - ground truth strategy = [array([0.0199507 , 0.02129569]), array([0.02299871, 0.02463884]), array([0.03340378, 0.03673073]), array([0.05024054, 0.0598359 ])]
+
+
+_____Sharpe Ratios_____
+Sharpe Ratios - pure forcasting strategy = [0.05044347630867493, 0.05280088011810843, 0.06470087333724285, 0.08795490722366528]
+Safest Trade Threshold - pure forcasting strategy = 0.001
+Sharpe Ratios - mean reversion strategy = [0.16936373645874225, 0.17653000995794532, 0.14560384711965466, 0.08349846215025661]
+Safest Trade Threshold - mean reversion strategy = 0.00025
+Sharpe Ratios - hybrid strategy = [0.13510493983105631, 0.13112283738357433, 0.10617462856785681, 0.05918397470586327]
+Safest Trade Threshold - hybrid strategy = 0.0
+Sharpe Ratios - ground truth strategy = [0.686351091755342, 0.6735774636677256, 0.4928963382608331, 0.2693449634636183]
+Safest Trade Threshold - ground truth strategy = 0.0
+
+
+_____Number of Trades_____
+pure forcasting strategy: trades made = [38543, 36281, 33291, 24137], trades not made = [0, 2262, 5252, 14406]
+mean reversion strategy: trades made = [32322, 27437, 14347, 4826], trades not made = [6221, 11106, 24196, 33717]
+hybrid strategy: trades made = [17070, 13795, 6976, 2090], trades not made = [21473, 24748, 31567, 36453]
+ground truth strategy: trades made = [32322, 27437, 14346, 4826], trades not made = [6221, 11106, 24197, 33717]
+
+
+_____Confusion Matrix_____
+pure forcasting strategy v/s ground truth for thresold = 0.0: TP = 7313, FP = 6619, FN = 8941, TN = 9449
+pure forcasting strategy v/s ground truth for thresold = 0.00025: TP = 6827, FP = 6260, FN = 8279, TN = 9004
+pure forcasting strategy v/s ground truth for thresold = 0.0005: TP = 6426, FP = 5803, FN = 7274, TN = 8355
+pure forcasting strategy v/s ground truth for thresold = 0.001: TP = 5339, FP = 4529, FN = 4289, TN = 6100
+mean reversion strategy v/s ground truth for thresold = 0.0: TP = 8718, FP = 4975, FN = 5100, TN = 8666
+mean reversion strategy v/s ground truth for thresold = 0.00025: TP = 7644, FP = 3940, FN = 4073, TN = 7629
+mean reversion strategy v/s ground truth for thresold = 0.0005: TP = 4302, FP = 1912, FN = 1964, TN = 4373
+mean reversion strategy v/s ground truth for thresold = 0.001: TP = 1506, FP = 672, FN = 666, TN = 1482
+hybrid strategy v/s ground truth for thresold = 0.0: TP = 4238, FP = 2249, FN = 2897, TN = 5162
+hybrid strategy v/s ground truth for thresold = 0.00025: TP = 3324, FP = 1643, FN = 2295, TN = 4489
+hybrid strategy v/s ground truth for thresold = 0.0005: TP = 1928, FP = 818, FN = 984, TN = 2395
+hybrid strategy v/s ground truth for thresold = 0.001: TP = 593, FP = 227, FN = 293, TN = 764
