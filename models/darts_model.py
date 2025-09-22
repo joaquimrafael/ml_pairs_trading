@@ -140,7 +140,7 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
 
         predicted_df = pd.DataFrame(predicted_values, columns=['predicted'])
         tseries_predicted = TimeSeries.from_dataframe(predicted_df, value_cols='predicted')
-        tseries_predicted = self.scaler.inverse_transform(tseries_predicted).pd_series(copy=True)
+        tseries_predicted = self.scaler.inverse_transform(tseries_predicted).to_series(copy=True)
         predicted_values = tseries_predicted.values.tolist()
 
         return predicted_values
@@ -148,6 +148,6 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
     def get_true_values(self, test_series):
         """Retrieves true values from the test series after scaling back."""
         test_series_inverse = self.scaler.inverse_transform(test_series)
-        true_df = test_series_inverse.pd_series(copy=True)
+        true_df = test_series_inverse.to_series(copy=True)
         true_values = true_df[self.model_config.INPUT_CHUNK_LENGTH:].values.tolist()
         return true_values
