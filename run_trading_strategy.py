@@ -11,6 +11,7 @@ from models import MultiAgentReplayBuffer
 from models import MADDPG
 from strategies import RLTradingStrategy
 import argparse
+import plot.graphics as graphics
 
 def obs_list_to_state_vector(observation):
     state = np.array([])
@@ -61,6 +62,9 @@ def run_sl_based_trading_strategy(model_name, model_config, trade_thresholds):
     prediction_error = eval_metrics.calculate_prediction_error(predicted_values, true_values)
     print(f"Prediction Error: {prediction_error}")
     print (f"\n")
+    
+    # Plot the model evaluation metrics using a custom graphics module.
+    graphics.plot_model_metrics(prediction_error)
 
     # Retrieve the numerator and denominator prices for the test dataset from the DataProcessor.
     numerator_prices, denominator_prices = dataProcessor.get_test_columns(test_size)
