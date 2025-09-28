@@ -2,7 +2,8 @@ from models import FinancialForecastingModel
 import pandas as pd
 from darts import TimeSeries
 from darts.dataprocessing.transformers import Scaler
-from darts.models import NHiTSModel, NBEATSModel, TCNModel, TransformerModel
+from darts.models import NHiTSModel, NBEATSModel, TCNModel, TransformerModel, RegressionModel
+from sklearn.ensemble import RandomForestRegressor
 
 class DartsFinancialForecastingModel(FinancialForecastingModel):
     """A financial forecasting model based on the Darts library."""
@@ -91,6 +92,16 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
                     "accelerator": "gpu",
                     "devices": [0]
                 }
+            )
+        
+        elif model_name == "RANDOM_FOREST":
+            return RegressionModel(
+                lags=12,
+                model=RandomForestRegressor(
+                    n_estimators=200,
+                    max_depth=5,
+                    random_state=42
+                )
             )
 
         else:
