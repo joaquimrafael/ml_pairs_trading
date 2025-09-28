@@ -2,7 +2,7 @@ from models import FinancialForecastingModel
 import pandas as pd
 from darts import TimeSeries
 from darts.dataprocessing.transformers import Scaler
-from darts.models import NHiTSModel, NBEATSModel, TCNModel, TransformerModel, RegressionModel
+from darts.models import NHiTSModel, NBEATSModel, TCNModel, TransformerModel, RegressionModel, RNNModel
 from sklearn.ensemble import RandomForestRegressor
 
 class DartsFinancialForecastingModel(FinancialForecastingModel):
@@ -94,7 +94,7 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
                 }
             )
         
-        elif model_name == "RANDOM_FOREST":
+        elif model_name == "random_forests":
             return RegressionModel(
                 lags=12,
                 model=RandomForestRegressor(
@@ -103,6 +103,25 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
                     random_state=42
                 )
             )
+        
+        elif model_name == "lstm":
+            return RNNModel(
+                model="LSTM",            
+                input_chunk_length=self.model_config.INPUT_CHUNK_LENGTH,
+                output_chunk_length=self.model_config.OUTPUT_CHUNK_LENGTH,
+                training_length=51,
+                hidden_dim=64,
+                n_rnn_layers=2,    
+                dropout=0.2,
+                batch_size=self.model_config.BATCH_SIZE,
+                n_epochs=self.model_config.N_EPOCHS,
+                random_state=42,
+                pl_trainer_kwargs = {
+                    "accelerator": "gpu",
+                    "devices": [0]
+                }
+            )
+
 
         else:
             raise ValueError("Invalid model name.")
@@ -130,7 +149,12 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
 
     def train(self, train_series, validation_series):
         """Trains the model."""
-        self.model.fit(train_series, val_series=validation_series, verbose=True)
+        if isinstance(self.model, RegressionModel):
+            # RandomForest e outros regressors sklearn não aceitam verbose
+            self.model.fit(train_series, val_series=validation_series)
+        else:
+            self.model.fit(train_series, val_series=validation_series, verbose=True)
+
 
     def predict_future_values(self, test_series):
         """Makes future value predictions based on the test series."""
