@@ -68,7 +68,8 @@ def run_sl_based_trading_strategy(model_name, model_config, trade_thresholds):
 
     # Simulate trading strategies using the actual and predicted values, along with the numerator and
     # denominator prices, to assess the financial performance of the forecasting model.
-    trading_simulator.simulate_trading_with_strategies(true_values, predicted_values, numerator_prices, denominator_prices, trade_thresholds)
+    trading_simulator.simulate_trading_with_strategies(true_values, predicted_values, numerator_prices, denominator_prices, trade_thresholds, model_name)
+    
 
 def run_rl_based_trading_strategy(model_config):
 

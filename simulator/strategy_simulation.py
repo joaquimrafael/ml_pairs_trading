@@ -1,4 +1,5 @@
 from strategies import SLTradingStrategy
+from plot import graphics
 
 class TradingSimulator:
     def initialize_strategies(self, trade_thresholds):
@@ -9,7 +10,7 @@ class TradingSimulator:
         ground_truth_strategy = SLTradingStrategy("ground truth", trade_thresholds)
         return pure_forcasting_strategy, mean_reversion_strategy, hybrid_strategy, ground_truth_strategy
 
-    def simulate_trading_with_strategies(self, true_values, predicted_values, numerator_prices, denominator_prices, trade_thresholds):
+    def simulate_trading_with_strategies(self, true_values, predicted_values, numerator_prices, denominator_prices, trade_thresholds, model_name):
         """Simulates trading with the strategies."""
         pure_forcasting_strategy, mean_reversion_strategy, hybrid_strategy, ground_truth_strategy = self.initialize_strategies(trade_thresholds)
 
@@ -76,3 +77,12 @@ class TradingSimulator:
         mean_reversion_strategy.display_confusion_matrix()
         hybrid_strategy.display_confusion_matrix()
         print (f"\n")
+        
+        strategies = [
+        pure_forcasting_strategy,
+        mean_reversion_strategy,
+        hybrid_strategy,
+        ground_truth_strategy
+        ]
+        graphics.plot_trading_strategy_performance(strategies, model_name)
+        graphics.plot_confusion_matrices(strategies, model_name)

@@ -116,4 +116,178 @@ def plot_training_progress(losses, model_name):
     print(f"Plot saved to: {save_path}")
     plt.close()
 
-#Plots for the Trading Strategies
+#Plots for the Trading Strategies  
+
+# SL_STRATEGYS
+
+def plot_trading_strategy_performance(strategies, model_name):
+    """
+    Plots comparative performance of multiple SL trading strategies
+    (pure forecasting, mean reversion, hybrid, ground truth).
+
+    Each strategy object should be an instance of SLTradingStrategy after simulation.
+    """
+    model_dir = ensure_model_dir(model_name)
+
+    # Extract strategy names and thresholds
+    strategy_names = [s.strategy_name for s in strategies]
+    thresholds = strategies[0].trade_thresholds
+
+    # Define a distinct color palette for each strategy
+    color_map = {
+        "pure forcasting": "#1f77b4",     # strong blue
+        "mean reversion": "#ff7f0e",      # vivid orange
+        "hybrid": "#2ca02c",              # rich green
+        "ground truth": "#d62728"         # bright red
+    }
+
+    # ---- 1️⃣ Total Profit per Strategy ----
+    plt.figure(figsize=(10, 6))
+    for s in strategies:
+        sns.lineplot(
+            x=thresholds,
+            y=s.total_profit_or_loss,
+            label=s.strategy_name,
+            color=color_map.get(s.strategy_name, None),
+            linewidth=2.5
+        )
+    plt.title("Total Profit vs Trade Threshold")
+    plt.xlabel("Trade Threshold")
+    plt.ylabel("Total Profit")
+    plt.legend()
+    save_path = os.path.join(model_dir, "total_profit_vs_threshold.png")
+    plt.savefig(save_path, bbox_inches="tight")
+    print(f"Plot saved to: {save_path}")
+    plt.close()
+
+    # ---- 2️⃣ Sharpe Ratios per Strategy ----
+    plt.figure(figsize=(10, 6))
+    for s in strategies:
+        sns.lineplot(
+            x=thresholds,
+            y=s.sharpe_ratios,
+            label=s.strategy_name,
+            color=color_map.get(s.strategy_name, None),
+            linewidth=2.5
+        )
+    plt.title("Sharpe Ratio vs Trade Threshold")
+    plt.xlabel("Trade Threshold")
+    plt.ylabel("Sharpe Ratio")
+    plt.legend()
+    save_path = os.path.join(model_dir, "sharpe_ratio_vs_threshold.png")
+    plt.savefig(save_path, bbox_inches="tight")
+    print(f"Plot saved to: {save_path}")
+    plt.close()
+
+    # ---- 3️⃣ Number of Trades ----
+    plt.figure(figsize=(10, 6))
+    for s in strategies:
+        sns.lineplot(
+            x=thresholds,
+            y=s.num_trade,
+            label=f"{s.strategy_name} (executed)",
+            color=color_map.get(s.strategy_name, None),
+            linewidth=2.5
+        )
+        sns.lineplot(
+            x=thresholds,
+            y=s.no_trade,
+            linestyle="--",
+            label=f"{s.strategy_name} (skipped)",
+            color=color_map.get(s.strategy_name, None),
+            linewidth=1.8
+        )
+    plt.title("Number of Trades vs Trade Threshold")
+    plt.xlabel("Trade Threshold")
+    plt.ylabel("Number of Trades")
+    plt.legend()
+    save_path = os.path.join(model_dir, "num_trades_vs_threshold.png")
+    plt.savefig(save_path, bbox_inches="tight")
+    print(f"Plot saved to: {save_path}")
+    plt.close()
+
+    # ---- 4️⃣ Profit per Trade ----
+    plt.figure(figsize=(10, 6))
+    for s in strategies:
+        profit_per_trade = [
+            (total / num) if num > 0 else 0
+            for total, num in zip(s.total_profit_or_loss, s.num_trade)
+        ]
+        sns.lineplot(
+            x=thresholds,
+            y=profit_per_trade,
+            label=s.strategy_name,
+            color=color_map.get(s.strategy_name, None),
+            linewidth=2.5
+        )
+    plt.title("Profit per Trade vs Trade Threshold")
+    plt.xlabel("Trade Threshold")
+    plt.ylabel("Average Profit per Trade")
+    plt.legend()
+    save_path = os.path.join(model_dir, "profit_per_trade_vs_threshold.png")
+    plt.savefig(save_path, bbox_inches="tight")
+    print(f"Plot saved to: {save_path}")
+    plt.close()
+
+def plot_confusion_matrices(strategies, model_name):
+    """
+    Plots confusion matrices for each SL trading strategy and threshold.
+    Each matrix shows TP, FP, FN, TN (and optionally No Change).
+    """
+    model_dir = ensure_model_dir(model_name)
+
+    for s in strategies:
+        thresholds = s.trade_thresholds
+
+        for j, cm in enumerate(s.confusion_matrices):
+            # Build a simple 2x2 confusion matrix for visualization
+            matrix = np.array([
+                [cm.true_positive, cm.false_negative],
+                [cm.false_positive, cm.true_negative]
+            ])
+
+            labels = ["Positive", "Negative"]
+            plt.figure(figsize=(5, 4))
+            sns.heatmap(
+                matrix,
+                annot=True,
+                fmt="d",
+                cmap="YlGnBu",
+                xticklabels=labels,
+                yticklabels=labels
+            )
+
+            plt.title(
+                f"Confusion Matrix - {s.strategy_name}\nThreshold = {thresholds[j]}"
+            )
+            plt.xlabel("Predicted")
+            plt.ylabel("Actual")
+
+            save_path = os.path.join(
+                model_dir,
+                f"confusion_matrix_{s.strategy_name.replace(' ', '_')}_th{j}.png"
+            )
+            plt.savefig(save_path, bbox_inches="tight")
+            print(f"Plot saved to: {save_path}")
+            plt.close()
+
+            # Optional: show no_change count separately
+            if hasattr(cm, "no_change") and cm.no_change > 0:
+                plt.figure(figsize=(3, 3))
+                sns.heatmap(
+                    np.array([[cm.no_change]]),
+                    annot=True,
+                    fmt="d",
+                    cmap="Purples",
+                    cbar=False
+                )
+                plt.title(
+                    f"No-Change Count - {s.strategy_name}\nThreshold = {thresholds[j]}"
+                )
+                save_path_nc = os.path.join(
+                    model_dir,
+                    f"no_change_{s.strategy_name.replace(' ', '_')}_th{j}.png"
+                )
+                plt.savefig(save_path_nc, bbox_inches="tight")
+                print(f"Plot saved to: {save_path_nc}")
+                plt.close()
