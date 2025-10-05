@@ -7,6 +7,8 @@ import numpy as np
 # General Seaborn style configuration
 sns.set_theme(style="whitegrid", palette="crest")
 
+#Plots for the SL
+
 def ensure_model_dir(model_name):
     """
     Ensures that the directory 'plot/<model_name>/' exists.
@@ -113,3 +115,5 @@ def plot_training_progress(losses, model_name):
     plt.savefig(save_path, bbox_inches='tight')
     print(f"Plot saved to: {save_path}")
     plt.close()
+
+#Plots for the Trading Strategies
