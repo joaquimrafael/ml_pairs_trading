@@ -46,14 +46,11 @@ def run_sl_based_trading_strategy(model_name, model_config, trade_thresholds):
         predicted_values = predictor.generate_predictions(test_series)
         true_values = predictor.get_true_values(test_series)
 
-    # Plot the actual and predicted values using matplotlib to visualize the model's performance.
-    plt.plot(true_values, color = 'blue', label = 'True')
-    plt.plot(predicted_values, color = 'red', label = 'Prediction')
-    plt.title('True and Predicted Values')
-    plt.xlabel('Observations')
-    plt.ylabel('Ratio')
-    plt.legend()
-    plt.show()
+    # Plotagem avançada com Seaborn (salva automaticamente)
+    graphics.plot_predictions(true_values, predicted_values, model_name)
+    graphics.plot_error_distribution(true_values, predicted_values, model_name)
+    graphics.plot_correlation_heatmap(true_values, predicted_values, model_name)
+
 
     # Determine the size of the test dataset to simulate trading strategies.
     test_size = len(true_values)
@@ -64,7 +61,7 @@ def run_sl_based_trading_strategy(model_name, model_config, trade_thresholds):
     print (f"\n")
     
     # Plot the model evaluation metrics using a custom graphics module.
-    graphics.plot_model_metrics(prediction_error)
+    graphics.plot_model_metrics(prediction_error, model_name)
 
     # Retrieve the numerator and denominator prices for the test dataset from the DataProcessor.
     numerator_prices, denominator_prices = dataProcessor.get_test_columns(test_size)
