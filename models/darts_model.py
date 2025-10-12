@@ -2,7 +2,7 @@ from models import FinancialForecastingModel
 import pandas as pd
 from darts import TimeSeries
 from darts.dataprocessing.transformers import Scaler
-from darts.models import NHiTSModel, NBEATSModel, TCNModel, TransformerModel, RegressionModel, RNNModel
+from darts.models import NHiTSModel, NBEATSModel, TCNModel, TransformerModel, RegressionModel, RNNModel, TFTModel
 from sklearn.ensemble import RandomForestRegressor
 
 class DartsFinancialForecastingModel(FinancialForecastingModel):
@@ -94,7 +94,7 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
                 }
             )
         
-        elif model_name == "random_forests":
+        elif model_name == "random_forest":
             return RegressionModel(
                 lags=12,
                 model=RandomForestRegressor(
@@ -121,7 +121,27 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
                     "devices": [0]
                 }
             )
-
+        
+        elif model_name == "tft":
+            return TFTModel(
+                input_chunk_length=240,
+                output_chunk_length=5,
+                hidden_size=64,
+                lstm_layers=2,
+                dropout=0.2,
+                batch_size=64,
+                n_epochs=self.model_config.N_EPOCHS,
+                random_state=42,
+                add_relative_index=True,
+                add_encoders=None,
+                model_name="tft",
+                optimizer_kwargs={"lr": 0.0001},
+                pl_trainer_kwargs={
+                    "accelerator": "gpu",
+                    "devices": [0]
+                },
+            )
+          
 
         else:
             raise ValueError("Invalid model name.")

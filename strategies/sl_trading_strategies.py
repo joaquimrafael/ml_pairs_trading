@@ -129,6 +129,11 @@ class SLTradingStrategy(TradingStrategies):
                 return 'buy_denominator'
             else:
                 return 'no_trade'
+        elif self.strategy_name == 'threshold-based':
+            if abs(predicted_ratio_change) > threshold:
+                return 'buy_numerator' if predicted_ratio_change > 0 else 'buy_denominator'
+            else:
+                return 'no_trade'
         else:
             return 'no_trade'
 
