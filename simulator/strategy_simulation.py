@@ -1,3 +1,4 @@
+import pandas as pd
 from strategies import SLTradingStrategy
 from plot import graphics
 
@@ -96,3 +97,32 @@ class TradingSimulator:
         graphics.plot_trading_strategy_performance(strategies, model_name)
         graphics.plot_confusion_matrices(strategies, model_name)
         graphics.plot_accuracy(strategies, model_name)
+
+        thresholds = pure_forcasting_strategy.trade_thresholds
+        accuracies = []
+        precisions = []
+        recalls = []
+        f1s = []
+
+        for cm in pure_forcasting_strategy.confusion_matrices:
+            tp, fp, fn, tn = cm.true_positive, cm.false_positive, cm.false_negative, cm.true_negative
+            total = tp + fp + fn + tn
+            accuracy = (tp + tn) / total if total > 0 else 0
+            precision = tp / (tp + fp) if (tp + fp) > 0 else 0
+            recall = tp / (tp + fn) if (tp + fn) > 0 else 0
+            f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
+            
+            accuracies.append(accuracy)
+            precisions.append(precision)
+            recalls.append(recall)
+            f1s.append(f1)
+
+        metrics_df = pd.DataFrame({
+            "threshold": thresholds,
+            "accuracy": accuracies,
+            "precision": precisions,
+            "recall": recalls,
+            "f1": f1s
+        })
+
+        graphics.plot_model_performance_curves(metrics_df, model_name)

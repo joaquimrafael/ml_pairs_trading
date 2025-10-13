@@ -339,6 +339,32 @@ def plot_accuracy(strategies, model_name):
 
     save_path = os.path.join(model_dir, "accuracy_vs_threshold.png")
     plt.savefig(save_path, bbox_inches="tight")
-    print(f"Plot saved to: {save_path}\n")
+    print(f"Plot saved to: {save_path}")
     plt.close()
 
+
+def plot_model_performance_curves(metrics_df, model_name):
+    """
+    Plota curvas de desempenho do modelo supervisionado:
+    Accuracy, Precision, Recall e F1-score em função do threshold.
+    metrics_df deve ter colunas: ['threshold', 'accuracy', 'precision', 'recall', 'f1']
+    """
+    model_dir = ensure_model_dir(model_name)
+    save_path = os.path.join(model_dir, "model_performance_curves.png")
+
+    plt.figure(figsize=(10, 6))
+    sns.lineplot(x='threshold', y='accuracy', data=metrics_df, label='Accuracy', linewidth=2.5, color="#1f77b4")
+    sns.lineplot(x='threshold', y='precision', data=metrics_df, label='Precision', linewidth=2.5, color="#ff7f0e")
+    sns.lineplot(x='threshold', y='recall', data=metrics_df, label='Recall', linewidth=2.5, color="#2ca02c")
+    sns.lineplot(x='threshold', y='f1', data=metrics_df, label='F1-Score', linewidth=2.5, color="#d62728")
+
+    plt.title("Model Performance vs Threshold", fontsize=14)
+    plt.xlabel("Trade Threshold", fontsize=12)
+    plt.ylabel("Metric Value", fontsize=12)
+    plt.ylim(0, 1)
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.7)
+
+    plt.savefig(save_path, bbox_inches="tight")
+    print(f"ML Performance Plot saved to: {save_path}")
+    plt.close()
