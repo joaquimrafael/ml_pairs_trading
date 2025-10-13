@@ -91,8 +91,8 @@ class TradingSimulator:
         pure_forcasting_strategy,
         mean_reversion_strategy,
         hybrid_strategy,
-        ground_truth_strategy,
         threshold_based_strategy
         ]
         graphics.plot_trading_strategy_performance(strategies, model_name)
         graphics.plot_confusion_matrices(strategies, model_name)
+        graphics.plot_accuracy(strategies, model_name)
