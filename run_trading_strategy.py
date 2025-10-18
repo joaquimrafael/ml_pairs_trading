@@ -151,6 +151,7 @@ def run(args):
     model_config.BATCH_SIZE = args.batch_size
     model_config.TRAIN_RATIO = args.train_ratio
     model_config.DATA_FILE_PATH = args.data_path
+    graphics.set_data_set(args.data_path)
 
     model_name = args.sl_model
     thresholds = [float(threshold) for threshold in args.thresholds.split(',')]

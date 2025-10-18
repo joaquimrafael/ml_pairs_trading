@@ -7,6 +7,13 @@ import numpy as np
 # General Seaborn style configuration
 sns.set_theme(style="whitegrid", palette="crest")
 
+
+data_set = ""
+
+def set_data_set(data_set_name):
+    global data_set
+    data_set = data_set_name
+
 #Plots for the SL
 
 def ensure_model_dir(model_name):
@@ -14,7 +21,9 @@ def ensure_model_dir(model_name):
     Ensures that the directory 'plot/<model_name>/' exists.
     Returns the path to the model's plot directory.
     """
-    model_dir = os.path.join("plot", model_name)
+    data_dir = os.path.join("plot", data_set)
+    os.makedirs(data_dir, exist_ok=True)
+    model_dir = os.path.join(data_set, model_name)
     os.makedirs(model_dir, exist_ok=True)
     return model_dir
 
@@ -138,10 +147,10 @@ def plot_trading_strategy_performance(strategies, model_name):
         "pure forcasting": "#1f77b4",     # strong blue
         "mean reversion": "#ff7f0e",      # vivid orange
         "hybrid": "#2ca02c",              # rich green
-        "ground truth": "#d62728"         # bright red
+        "threshold_based_strategy": "#d62728"         # bright red
     }
 
-    # ---- 1️⃣ Total Profit per Strategy ----
+    # ---- Total Profit per Strategy ----
     plt.figure(figsize=(10, 6))
     for s in strategies:
         sns.lineplot(
@@ -160,7 +169,7 @@ def plot_trading_strategy_performance(strategies, model_name):
     print(f"Plot saved to: {save_path}")
     plt.close()
 
-    # ---- 2️⃣ Sharpe Ratios per Strategy ----
+    # ---- Sharpe Ratios per Strategy ----
     plt.figure(figsize=(10, 6))
     for s in strategies:
         sns.lineplot(
@@ -179,7 +188,7 @@ def plot_trading_strategy_performance(strategies, model_name):
     print(f"Plot saved to: {save_path}")
     plt.close()
 
-    # ---- 3️⃣ Number of Trades ----
+    # ---- Number of Trades ----
     plt.figure(figsize=(10, 6))
     for s in strategies:
         sns.lineplot(
@@ -206,7 +215,7 @@ def plot_trading_strategy_performance(strategies, model_name):
     print(f"Plot saved to: {save_path}")
     plt.close()
 
-    # ---- 4️⃣ Profit per Trade ----
+    # ---- Profit per Trade ----
     plt.figure(figsize=(10, 6))
     for s in strategies:
         profit_per_trade = [
@@ -291,3 +300,45 @@ def plot_confusion_matrices(strategies, model_name):
                 plt.savefig(save_path_nc, bbox_inches="tight")
                 print(f"Plot saved to: {save_path_nc}")
                 plt.close()
+
+def plot_accuracy(strategies, model_name):
+    """
+    Calculates and plots accuracy for each SL trading strategy across thresholds.
+    Accuracy = (TP + TN) / (TP + FP + FN + TN)
+    """
+
+    model_dir = ensure_model_dir(model_name)
+
+    color_map = {
+        "pure forcasting": "#1f77b4",     # strong blue
+        "mean reversion": "#ff7f0e",      # vivid orange
+        "hybrid": "#2ca02c",              # rich green
+        "threshold_based_strategy": "#d62728"  # bright red
+    }
+
+    plt.figure(figsize=(10, 6))
+    for s in strategies:
+        accuracies = []
+        for cm in s.confusion_matrices:
+            total = cm.true_positive + cm.true_negative + cm.false_positive + cm.false_negative
+            accuracy = (cm.true_positive + cm.true_negative) / total if total > 0 else 0
+            accuracies.append(accuracy)
+        sns.lineplot(
+            x=s.trade_thresholds,
+            y=accuracies,
+            label=s.strategy_name,
+            linewidth=2.5,
+            color=color_map.get(s.strategy_name, None)
+        )
+
+    plt.title("Accuracy vs Trade Threshold")
+    plt.xlabel("Trade Threshold")
+    plt.ylabel("Accuracy")
+    plt.ylim(0, 1)
+    plt.legend()
+
+    save_path = os.path.join(model_dir, "accuracy_vs_threshold.png")
+    plt.savefig(save_path, bbox_inches="tight")
+    print(f"Plot saved to: {save_path}\n")
+    plt.close()
+

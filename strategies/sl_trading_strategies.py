@@ -87,6 +87,8 @@ class SLTradingStrategy(TradingStrategies):
             self.confusion_matrices[j].update(ground_truth_ratio_change, -1 * base_ratio_change)
         elif(self.strategy_name == 'pure forcasting'):
             self.confusion_matrices[j].update(ground_truth_ratio_change, predicted_ratio_change)
+        elif(self.strategy_name == 'threshold-based'):
+            self.confusion_matrices[j].update(ground_truth_ratio_change, predicted_ratio_change)
         elif(self.strategy_name == 'hybrid'):
             if ground_truth_ratio_change > 0 and (base_ratio_change < 0 and predicted_ratio_change > 0):
                 self.confusion_matrices[j].true_positive += 1
