@@ -124,7 +124,7 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
         
         elif model_name == "tft":
             return TFTModel(
-                input_chunk_length=120,
+                input_chunk_length=48,
                 output_chunk_length=5,
                 hidden_size=64,
                 lstm_layers=2,
