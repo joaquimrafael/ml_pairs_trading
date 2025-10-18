@@ -124,15 +124,15 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
         
         elif model_name == "tft":
             return TFTModel(
-                input_chunk_length=240,
+                input_chunk_length=120,
                 output_chunk_length=5,
                 hidden_size=64,
                 lstm_layers=2,
-                dropout=0.2,
+                dropout=0.15,
                 batch_size=64,
                 n_epochs=self.model_config.N_EPOCHS,
-                random_state=42,
                 add_relative_index=True,
+                random_state=42,
                 add_encoders=None,
                 model_name="tft",
                 optimizer_kwargs={"lr": 0.0001},
