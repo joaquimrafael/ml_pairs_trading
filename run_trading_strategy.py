@@ -5,6 +5,7 @@ from models import TfFinancialForecastingModel
 from simulator import TradingSimulator
 from metrics import ModelEvaluationMetrics
 from matplotlib import pyplot as plt
+from plot.save_data import *
 import random
 import numpy as np
 from models import MultiAgentReplayBuffer
@@ -12,6 +13,7 @@ from models import MADDPG
 from strategies import RLTradingStrategy
 import argparse
 import plot.graphics as graphics
+import pandas as pd
 
 def obs_list_to_state_vector(observation):
     state = np.array([])
@@ -69,6 +71,20 @@ def run_sl_based_trading_strategy(model_name, model_config, trade_thresholds):
     # Simulate trading strategies using the actual and predicted values, along with the numerator and
     # denominator prices, to assess the financial performance of the forecasting model.
     trading_simulator.simulate_trading_with_strategies(true_values, predicted_values, numerator_prices, denominator_prices, trade_thresholds, model_name)
+    save_predictions(true_values, predicted_values, model_name)
+
+    # Save metrics
+    metrics_df = pd.DataFrame({
+        "threshold": trade_thresholds,
+        "total_profit": [s.total_profit_or_loss for s in trading_simulator.strategies],
+        "sharpe_ratio": [s.sharpe_ratios for s in trading_simulator.strategies],
+        "num_trades": [s.num_trade for s in trading_simulator.strategies],
+        "no_trades": [s.no_trade for s in trading_simulator.strategies]
+    })
+    save_metrics_df(metrics_df, model_name)
+
+    # Saves results
+    save_strategy_results(trading_simulator.strategies, model_name)
     
 
 def run_rl_based_trading_strategy(model_config):

@@ -5,6 +5,7 @@ from plot import graphics
 class TradingSimulator:
     def initialize_strategies(self, trade_thresholds):
         """Initializes the strategies."""
+        self.strategies = []
         pure_forcasting_strategy = SLTradingStrategy("pure forcasting", trade_thresholds)
         mean_reversion_strategy = SLTradingStrategy("mean reversion", trade_thresholds)
         hybrid_strategy = SLTradingStrategy("hybrid", trade_thresholds)
@@ -88,15 +89,15 @@ class TradingSimulator:
         hybrid_strategy.display_confusion_matrix()
         print (f"\n")
         
-        strategies = [
+        self.strategies = [
         pure_forcasting_strategy,
         mean_reversion_strategy,
         hybrid_strategy,
         threshold_based_strategy
         ]
-        graphics.plot_trading_strategy_performance(strategies, model_name)
-        graphics.plot_confusion_matrices(strategies, model_name)
-        graphics.plot_accuracy(strategies, model_name)
+        graphics.plot_trading_strategy_performance(self.strategies, model_name)
+        graphics.plot_confusion_matrices(self.strategies, model_name)
+        graphics.plot_accuracy(self.strategies, model_name)
 
         thresholds = pure_forcasting_strategy.trade_thresholds
         accuracies = []
