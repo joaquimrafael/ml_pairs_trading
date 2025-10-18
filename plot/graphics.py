@@ -18,13 +18,14 @@ def set_data_set(data_set_name):
 
 def ensure_model_dir(model_name):
     """
-    Ensures that the directory 'plot/<data_set>/<model_name>/' exists.
+    Ensures that the directory 'plot/<dataset_name>/<model_name>/' exists.
     Returns the path to the model's plot directory.
     """
-    data_dir = os.path.join("plot", data_set)
-    os.makedirs(data_dir, exist_ok=True)
-    model_dir = os.path.join(data_dir, model_name)
+    dataset_name = os.path.splitext(os.path.basename(data_set))[0]
+
+    model_dir = os.path.join("plot", dataset_name, model_name)
     os.makedirs(model_dir, exist_ok=True)
+
     return model_dir
 
 
