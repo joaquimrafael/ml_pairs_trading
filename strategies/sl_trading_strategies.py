@@ -13,6 +13,7 @@ class SLTradingStrategy(TradingStrategies):
         self.no_trade = [0] * len(trade_thresholds)
         self.num_trade = [0] * len(trade_thresholds)
         self.confusion_matrices = [ConfusionMatrix() for _ in range(len(trade_thresholds))]
+        self.ml_weight = 1.0
 
     def evaluate_trade(self, i, prev_ratio, curr_ratio, predicted_next_ratio, actual_next_ratio, numerator_prices, denominator_prices):
         """Evaluates the trade at the current time step."""
@@ -47,7 +48,8 @@ class SLTradingStrategy(TradingStrategies):
             excess_returns = self.all_profit_or_loss[j]
             computed_mean = float(np.mean(excess_returns))
             computed_stddev = float(np.std(excess_returns))
-            self.sharpe_ratios.append(computed_mean / computed_stddev)
+            ratio = (computed_mean / computed_stddev) if computed_stddev != 0 else 0.0
+            self.sharpe_ratios.append(ratio)
 
     def time_series_bootstrap(self, profits, block_size, n_iterations):
         """Generates a bootstrap samples to estimate the standard deviation, standard error, and confidence interval."""
@@ -84,11 +86,16 @@ class SLTradingStrategy(TradingStrategies):
     def update_confusion_matrix(self, j, ground_truth_ratio_change, predicted_ratio_change, base_ratio_change):
         """Updates the confusion matrix based on the ground truth and predicted changes."""
         if(self.strategy_name == 'mean reversion'):
-            self.confusion_matrices[j].update(ground_truth_ratio_change, -1 * base_ratio_change)
+            mr_signal = (-base_ratio_change) + self.ml_weight * predicted_ratio_change
+            self.confusion_matrices[j].update(ground_truth_ratio_change, mr_signal)
+
         elif(self.strategy_name == 'pure forcasting'):
             self.confusion_matrices[j].update(ground_truth_ratio_change, predicted_ratio_change)
-        elif(self.strategy_name == 'threshold-based'):
-            self.confusion_matrices[j].update(ground_truth_ratio_change, predicted_ratio_change)
+
+        elif(self.strategy_name == 'momentum'):
+            mom_signal = (base_ratio_change) + self.ml_weight * predicted_ratio_change
+            self.confusion_matrices[j].update(ground_truth_ratio_change, mom_signal)
+
         elif(self.strategy_name == 'hybrid'):
             if ground_truth_ratio_change > 0 and (base_ratio_change < 0 and predicted_ratio_change > 0):
                 self.confusion_matrices[j].true_positive += 1
@@ -101,15 +108,20 @@ class SLTradingStrategy(TradingStrategies):
             elif (base_ratio_change == 0 or predicted_ratio_change == 0):
                 self.confusion_matrices[j].no_change += 1
 
+        elif(self.strategy_name == 'ground truth'):
+            self.confusion_matrices[j].update(ground_truth_ratio_change, ground_truth_ratio_change)
+
     def determine_trade_direction(self, base_ratio_change, predicted_ratio_change, ground_truth_ratio_change, threshold):
         """Determines the trade direction based on the base ratio change, the predicted ratio change, and ground truth ratio change."""
         if(self.strategy_name == 'mean reversion'):
-            if base_ratio_change > threshold:
-                return 'buy_denominator'
-            elif base_ratio_change < -threshold:
+            mr_signal = (-base_ratio_change) + self.ml_weight * predicted_ratio_change
+            if mr_signal > threshold:
                 return 'buy_numerator'
+            elif mr_signal < -threshold:
+                return 'buy_denominator'
             else:
                 return 'no_trade'
+
         elif(self.strategy_name == 'pure forcasting'):
             if predicted_ratio_change > threshold:
                 return 'buy_numerator'
@@ -117,6 +129,16 @@ class SLTradingStrategy(TradingStrategies):
                 return 'buy_denominator'
             else:
                 return 'no_trade'
+
+        elif(self.strategy_name == 'momentum'):
+            mom_signal = (base_ratio_change) + self.ml_weight * predicted_ratio_change
+            if mom_signal > threshold:
+                return 'buy_numerator'
+            elif mom_signal < -threshold:
+                return 'buy_denominator'
+            else:
+                return 'no_trade'
+
         elif(self.strategy_name == 'hybrid'):
             if base_ratio_change < -threshold and predicted_ratio_change > threshold:
                 return 'buy_numerator'
@@ -124,6 +146,7 @@ class SLTradingStrategy(TradingStrategies):
                 return 'buy_denominator'
             else:
                 return 'no_trade'
+
         elif(self.strategy_name == 'ground truth'):
             if ground_truth_ratio_change > threshold:
                 return 'buy_numerator'
@@ -131,11 +154,7 @@ class SLTradingStrategy(TradingStrategies):
                 return 'buy_denominator'
             else:
                 return 'no_trade'
-        elif self.strategy_name == 'threshold-based':
-            if abs(predicted_ratio_change) > threshold:
-                return 'buy_numerator' if predicted_ratio_change > 0 else 'buy_denominator'
-            else:
-                return 'no_trade'
+
         else:
             return 'no_trade'
 
@@ -144,7 +163,7 @@ class SLTradingStrategy(TradingStrategies):
         print(f"Best Trade Threshold - {self.strategy_name} strategy = {self.trade_thresholds[self.total_profit_or_loss.index(max(self.total_profit_or_loss))]}")
 
     def display_profit_per_trade(self):
-        print(f"Profits per Trade - {self.strategy_name} strategy = {[x / y for x, y in zip(self.total_profit_or_loss, self.num_trade)]}")
+        print(f"Profits per Trade - {self.strategy_name} strategy = {[x / y if y > 0 else 0 for x, y in zip(self.total_profit_or_loss, self.num_trade)]}")
 
     def display_stat_total_profit(self):
         stat = self.calculate_stats(self.all_profit_or_loss)
@@ -153,7 +172,7 @@ class SLTradingStrategy(TradingStrategies):
         print(f"Total Profits Confidence - {self.strategy_name} strategy = {stat['confidence_interval']}")
 
     def display_stat_profit_per_trade(self):
-        profit_per_trade = [[profit / num for profit in profits] for profits, num in zip(self.all_profit_or_loss, self.num_trade)]
+        profit_per_trade = [[(profit / num) if num > 0 else 0 for profit in profits] for profits, num in zip(self.all_profit_or_loss, self.num_trade)]
         stat = self.calculate_stats(profit_per_trade)
         print(f"Profits per Trade Std Dev - {self.strategy_name} strategy = {stat['standard_dev']}")
         print(f"Profits per Trade Std Error - {self.strategy_name} strategy = {stat['standard_error']}")

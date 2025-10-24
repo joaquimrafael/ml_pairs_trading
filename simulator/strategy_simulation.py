@@ -10,12 +10,13 @@ class TradingSimulator:
         mean_reversion_strategy = SLTradingStrategy("mean reversion", trade_thresholds)
         hybrid_strategy = SLTradingStrategy("hybrid", trade_thresholds)
         ground_truth_strategy = SLTradingStrategy("ground truth", trade_thresholds)
-        threshold_based_strategy = SLTradingStrategy("threshold-based", trade_thresholds) 
-        return pure_forcasting_strategy, mean_reversion_strategy, hybrid_strategy, ground_truth_strategy, threshold_based_strategy
+        # REPLACED: 'threshold-based' -> 'momentum'
+        momentum_strategy = SLTradingStrategy("momentum", trade_thresholds)
+        return pure_forcasting_strategy, mean_reversion_strategy, hybrid_strategy, ground_truth_strategy, momentum_strategy
 
     def simulate_trading_with_strategies(self, true_values, predicted_values, numerator_prices, denominator_prices, trade_thresholds, model_name):
         """Simulates trading with the strategies."""
-        pure_forcasting_strategy, mean_reversion_strategy, hybrid_strategy, ground_truth_strategy, threshold_based_strategy = self.initialize_strategies(trade_thresholds)
+        pure_forcasting_strategy, mean_reversion_strategy, hybrid_strategy, ground_truth_strategy, momentum_strategy = self.initialize_strategies(trade_thresholds)
 
         for i in range(2, len(true_values)):
             curr_ratio = true_values[i - 1]
@@ -27,20 +28,20 @@ class TradingSimulator:
             mean_reversion_strategy.evaluate_trade(i, prev_ratio, curr_ratio, predicted_next_ratio, actual_next_ratio, numerator_prices, denominator_prices)
             hybrid_strategy.evaluate_trade(i, prev_ratio, curr_ratio, predicted_next_ratio, actual_next_ratio, numerator_prices, denominator_prices)
             ground_truth_strategy.evaluate_trade(i, prev_ratio, curr_ratio, predicted_next_ratio, actual_next_ratio, numerator_prices, denominator_prices)
-            threshold_based_strategy.evaluate_trade(i, prev_ratio, curr_ratio, predicted_next_ratio, actual_next_ratio, numerator_prices, denominator_prices)
+            momentum_strategy.evaluate_trade(i, prev_ratio, curr_ratio, predicted_next_ratio, actual_next_ratio, numerator_prices, denominator_prices)
 
         pure_forcasting_strategy.calculate_sharpe_ratios()
         mean_reversion_strategy.calculate_sharpe_ratios()
         hybrid_strategy.calculate_sharpe_ratios()
         ground_truth_strategy.calculate_sharpe_ratios()
-        threshold_based_strategy.calculate_sharpe_ratios()
+        momentum_strategy.calculate_sharpe_ratios()
 
         print (f"_____Total Profits_____")
         pure_forcasting_strategy.display_total_profit()
         mean_reversion_strategy.display_total_profit()
         hybrid_strategy.display_total_profit()
         ground_truth_strategy.display_total_profit()
-        threshold_based_strategy.display_total_profit()
+        momentum_strategy.display_total_profit()
         print (f"\n")
 
         print (f"_____Profits per Trade_____")
@@ -48,7 +49,7 @@ class TradingSimulator:
         mean_reversion_strategy.display_profit_per_trade()
         hybrid_strategy.display_profit_per_trade()
         ground_truth_strategy.display_profit_per_trade()
-        threshold_based_strategy.display_profit_per_trade()
+        momentum_strategy.display_profit_per_trade()
         print (f"\n")
 
         print (f"_____Total Profits Statistics_____")
@@ -56,7 +57,7 @@ class TradingSimulator:
         mean_reversion_strategy.display_stat_total_profit()
         hybrid_strategy.display_stat_total_profit()
         ground_truth_strategy.display_stat_total_profit()
-        threshold_based_strategy.display_stat_total_profit()
+        momentum_strategy.display_stat_total_profit()
         print (f"\n")
 
         print (f"_____Profits per Trade Statistics_____")
@@ -64,7 +65,7 @@ class TradingSimulator:
         mean_reversion_strategy.display_stat_profit_per_trade()
         hybrid_strategy.display_stat_profit_per_trade()
         ground_truth_strategy.display_stat_profit_per_trade()
-        threshold_based_strategy.display_stat_profit_per_trade()
+        momentum_strategy.display_stat_profit_per_trade()
         print (f"\n")
 
         print (f"_____Sharpe Ratios_____")
@@ -72,7 +73,7 @@ class TradingSimulator:
         mean_reversion_strategy.display_sharpe_ratios()
         hybrid_strategy.display_sharpe_ratios()
         ground_truth_strategy.display_sharpe_ratios()
-        threshold_based_strategy.display_sharpe_ratios()
+        momentum_strategy.display_sharpe_ratios()
         print (f"\n")
 
         print (f"_____Number of Trades_____")
@@ -80,7 +81,7 @@ class TradingSimulator:
         mean_reversion_strategy.display_num_trades()
         hybrid_strategy.display_num_trades()
         ground_truth_strategy.display_num_trades()
-        threshold_based_strategy.display_num_trades()
+        momentum_strategy.display_num_trades()
         print (f"\n")
 
         print (f"_____Confusion Matrix_____")
@@ -89,15 +90,21 @@ class TradingSimulator:
         hybrid_strategy.display_confusion_matrix()
         print (f"\n")
         
+        # Strategies to plot (exclude ground truth from plots if you prefer benchmark only)
         self.strategies = [
-        pure_forcasting_strategy,
-        mean_reversion_strategy,
-        hybrid_strategy,
-        threshold_based_strategy
+            pure_forcasting_strategy,
+            mean_reversion_strategy,
+            hybrid_strategy,
+            momentum_strategy
         ]
         graphics.plot_trading_strategy_performance(self.strategies, model_name)
         graphics.plot_confusion_matrices(self.strategies, model_name)
         graphics.plot_accuracy(self.strategies, model_name)
+        graphics.plot_hitrate_summary(self.strategies, model_name, criterion="sharpe")
+        graphics.plot_strategy_classification_curves(self.strategies, model_name)
+        graphics.plot_cumulative_pnl_best_threshold(self.strategies, model_name, criterion="sharpe")
+        graphics.plot_cumulative_pnl_best_threshold(self.strategies, model_name, criterion="profit")
+        graphics.plot_trade_return_distribution(self.strategies, model_name)
 
         thresholds = pure_forcasting_strategy.trade_thresholds
         accuracies = []

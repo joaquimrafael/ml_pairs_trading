@@ -2,8 +2,17 @@ from models import FinancialForecastingModel
 import pandas as pd
 from darts import TimeSeries
 from darts.dataprocessing.transformers import Scaler
-from darts.models import NHiTSModel, NBEATSModel, TCNModel, TransformerModel, RegressionModel, RNNModel, TFTModel
+from darts.models import (
+    NHiTSModel,
+    NBEATSModel,
+    TCNModel,
+    TransformerModel,
+    RegressionModel,
+    RNNModel,
+    TFTModel,
+)
 from sklearn.ensemble import RandomForestRegressor
+
 
 class DartsFinancialForecastingModel(FinancialForecastingModel):
     """A financial forecasting model based on the Darts library."""
@@ -14,141 +23,144 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
         self.model = self.initalize_model(model_name)
 
     def initalize_model(self, model_name):
-        """Creates the model."""
+        """
+        Creates the model with hyperparameters tuned for noisy, mean-reverting
+        ratio/log-return series typical in pairs trading.
+        """
+        lr = 5e-4
+        bs = self.model_config.BATCH_SIZE
+        n_epochs = self.model_config.N_EPOCHS
+        in_len = self.model_config.INPUT_CHUNK_LENGTH
+        out_len = self.model_config.OUTPUT_CHUNK_LENGTH
+
+        trainer = {
+            "accelerator": "auto",
+            "devices": 1,
+            "enable_progress_bar": False,
+        }
+
         if model_name == "nbeats":
             return NBEATSModel(
-                input_chunk_length=self.model_config.INPUT_CHUNK_LENGTH,
-                output_chunk_length=self.model_config.OUTPUT_CHUNK_LENGTH,
-                num_layers=5,
+                input_chunk_length=in_len,
+                output_chunk_length=out_len,
+                num_layers=4,
                 num_blocks=1,
-                num_stacks=2,
-                layer_widths=512,
-                dropout=0.2,
-                n_epochs=self.model_config.N_EPOCHS,
-                batch_size=self.model_config.BATCH_SIZE,
+                num_stacks=8,
+                layer_widths=256,
+                dropout=0.1,
+                n_epochs=n_epochs,
+                batch_size=bs,
                 model_name="nbeats",
-                optimizer_kwargs={"lr": 0.0001},
-                pl_trainer_kwargs={
-                "accelerator": "gpu",
-                "devices": [0]
-                },
+                optimizer_kwargs={"lr": lr},
+                pl_trainer_kwargs=trainer,
             )
 
         elif model_name == "nhits":
             return NHiTSModel(
-                input_chunk_length=self.model_config.INPUT_CHUNK_LENGTH,
-                output_chunk_length=self.model_config.OUTPUT_CHUNK_LENGTH,
-                num_layers=5,
+                input_chunk_length=in_len,
+                output_chunk_length=out_len,
+                num_layers=3,
                 num_blocks=1,
-                num_stacks=2,
-                layer_widths=512,
-                dropout=0.2,
-                n_epochs=self.model_config.N_EPOCHS,
-                batch_size=self.model_config.BATCH_SIZE,
+                num_stacks=4,
+                layer_widths=128,
+                dropout=0.1,
+                n_epochs=n_epochs,
+                batch_size=bs,
                 model_name="nhits",
-                optimizer_kwargs={"lr": 0.0001},
-                pl_trainer_kwargs={
-                "accelerator": "gpu",
-                "devices": [0]
-                },
+                optimizer_kwargs={"lr": lr},
+                pl_trainer_kwargs=trainer,
             )
 
         elif model_name == "transformer":
             return TransformerModel(
-                input_chunk_length=self.model_config.INPUT_CHUNK_LENGTH,
-                output_chunk_length=self.model_config.OUTPUT_CHUNK_LENGTH,
-                n_epochs=self.model_config.N_EPOCHS,
-                batch_size=self.model_config.BATCH_SIZE,
-                nhead=4,
-                d_model=256,
-                num_encoder_layers = 3,
-                num_decoder_layers = 3,
-                dim_feedforward = 16,
-                norm_type = "LayerNormNoBias",
-                dropout=0.2,
+                input_chunk_length=in_len,
+                output_chunk_length=out_len,
+                n_epochs=n_epochs,
+                batch_size=bs,
+                nhead=8,
+                d_model=128,
+                num_encoder_layers=3,
+                num_decoder_layers=3,
+                dim_feedforward=256,
+                norm_type="LayerNormNoBias",
+                dropout=0.1,
                 model_name="transformer",
-                optimizer_kwargs={"lr": 0.0001},
-                pl_trainer_kwargs={
-                "accelerator": "gpu",
-                "devices": [0]
-                },
+                optimizer_kwargs={"lr": lr},
+                pl_trainer_kwargs=trainer,
             )
 
         elif model_name == "tcn":
             return TCNModel(
-                input_chunk_length=self.model_config.INPUT_CHUNK_LENGTH,
-                output_chunk_length=self.model_config.OUTPUT_CHUNK_LENGTH,
-                kernel_size = 3,
-                num_filters = 64,
-                num_layers = 8,
-                dilation_base = 2,
-                n_epochs=self.model_config.N_EPOCHS,
-                batch_size=self.model_config.BATCH_SIZE,
-                weight_norm = True,
+                input_chunk_length=in_len,
+                output_chunk_length=out_len,
+                kernel_size=3,
+                num_filters=32,
+                num_layers=6,
+                dilation_base=2,
+                weight_norm=True,
+                dropout=0.1,
+                n_epochs=n_epochs,
+                batch_size=bs,
                 model_name="tcn",
-                dropout = 0.2,
-                optimizer_kwargs={"lr": 0.0001},
-                pl_trainer_kwargs = {
-                    "accelerator": "gpu",
-                    "devices": [0]
-                }
+                optimizer_kwargs={"lr": lr},
+                pl_trainer_kwargs=trainer,
             )
-        
+
         elif model_name == "random_forest":
+            rf_lags = max(6, min(48, in_len if in_len is not None else 24))
             return RegressionModel(
-                lags=12,
+                lags=rf_lags,
                 model=RandomForestRegressor(
-                    n_estimators=200,
-                    max_depth=5,
-                    random_state=42
-                )
+                    n_estimators=400,
+                    max_depth=8,
+                    min_samples_leaf=5,
+                    random_state=42,
+                    n_jobs=-1,
+                ),
             )
-        
+
         elif model_name == "lstm":
+            train_len = (in_len or 50) + (out_len or 1)
             return RNNModel(
-                model="LSTM",            
-                input_chunk_length=self.model_config.INPUT_CHUNK_LENGTH,
-                output_chunk_length=self.model_config.OUTPUT_CHUNK_LENGTH,
-                training_length=51,
-                hidden_dim=64,
-                n_rnn_layers=2,    
+                model="LSTM",
+                input_chunk_length=in_len,
+                output_chunk_length=out_len,
+                training_length=train_len,
+                hidden_dim=128,
+                n_rnn_layers=2,
                 dropout=0.2,
-                batch_size=self.model_config.BATCH_SIZE,
-                n_epochs=self.model_config.N_EPOCHS,
+                batch_size=bs,
+                n_epochs=n_epochs,
                 random_state=42,
-                pl_trainer_kwargs = {
-                    "accelerator": "gpu",
-                    "devices": [0]
-                }
+                optimizer_kwargs={"lr": lr},
+                pl_trainer_kwargs=trainer,
             )
-        
+
         elif model_name == "tft":
             return TFTModel(
-                input_chunk_length=48,
-                output_chunk_length=5,
-                hidden_size=64,
+                input_chunk_length=in_len,
+                output_chunk_length=out_len,
+                hidden_size=128,
                 lstm_layers=2,
-                dropout=0.15,
-                batch_size=64,
-                n_epochs=self.model_config.N_EPOCHS,
+                dropout=0.1,
+                batch_size=bs,
+                n_epochs=n_epochs,
                 add_relative_index=True,
-                random_state=42,
                 add_encoders=None,
+                random_state=42,
                 model_name="tft",
-                optimizer_kwargs={"lr": 0.0001},
-                pl_trainer_kwargs={
-                    "accelerator": "gpu",
-                    "devices": [0]
-                },
+                optimizer_kwargs={"lr": lr},
+                pl_trainer_kwargs=trainer,
             )
-          
 
         else:
             raise ValueError("Invalid model name.")
 
-
-    def split_and_scale_data(self, train_ratio=0.5, validation_ratio=0.1):
-        """Splits the data into training, validation, and test sets and applies scaling."""
+    def split_and_scale_data(self, train_ratio=0.7, validation_ratio=0.1):
+        """
+        Splits the data into training, validation, and test sets and applies scaling.
+        Keeps your original API; you can pass different ratios when calling if needed.
+        """
         series = self.data_processor.get_ratio_time_series()
 
         num_observations = len(series)
@@ -159,7 +171,6 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
         val_series = series[train_end_index:validation_end_index]
         test_series = series[validation_end_index:]
 
-        # Scaling the data
         self.scaler = Scaler()
         train_series_scaled = self.scaler.fit_transform(train_series)
         valid_series_scaled = self.scaler.transform(val_series)
@@ -170,22 +181,22 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
     def train(self, train_series, validation_series):
         """Trains the model."""
         if isinstance(self.model, RegressionModel):
-            # RandomForest e outros regressors sklearn não aceitam verbose
             self.model.fit(train_series, val_series=validation_series)
         else:
-            self.model.fit(train_series, val_series=validation_series, verbose=True)
-
+            self.model.fit(train_series, val_series=validation_series, verbose=False)
 
     def predict_future_values(self, test_series):
         """Makes future value predictions based on the test series."""
         return self.model.predict(self.model_config.OUTPUT_CHUNK_LENGTH, series=test_series)
 
     def generate_predictions(self, test_series):
-        """Generates predictions for each window of the test series."""
+        """
+        Generates predictions for each rolling window of the test series.
+        Keeps your original logic and returns values in the original scale.
+        """
         transformed_series = []
-
         for i in range(len(test_series) - self.model_config.INPUT_CHUNK_LENGTH):
-            transformed_series.append(test_series[i: i + self.model_config.INPUT_CHUNK_LENGTH])
+            transformed_series.append(test_series[i : i + self.model_config.INPUT_CHUNK_LENGTH])
 
         pred_series = self.predict_future_values(transformed_series)
 
@@ -193,8 +204,8 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
         for pred in pred_series:
             predicted_values.append(pred.values()[0][0])
 
-        predicted_df = pd.DataFrame(predicted_values, columns=['predicted'])
-        tseries_predicted = TimeSeries.from_dataframe(predicted_df, value_cols='predicted')
+        predicted_df = pd.DataFrame(predicted_values, columns=["predicted"])
+        tseries_predicted = TimeSeries.from_dataframe(predicted_df, value_cols="predicted")
         tseries_predicted = self.scaler.inverse_transform(tseries_predicted).to_series(copy=True)
         predicted_values = tseries_predicted.values.tolist()
 
@@ -204,5 +215,5 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
         """Retrieves true values from the test series after scaling back."""
         test_series_inverse = self.scaler.inverse_transform(test_series)
         true_df = test_series_inverse.to_series(copy=True)
-        true_values = true_df[self.model_config.INPUT_CHUNK_LENGTH:].values.tolist()
+        true_values = true_df[self.model_config.INPUT_CHUNK_LENGTH :].values.tolist()
         return true_values
