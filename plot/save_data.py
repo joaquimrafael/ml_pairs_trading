@@ -4,7 +4,7 @@ from .graphics import ensure_model_dir
 
 
 def save_predictions(true_values, predicted_values, model_name):
-    """Salva os arrays de true e predicted values na pasta do modelo."""
+    """Saves the true and predicted values arrays in the model's folder."""
     dir_path = ensure_model_dir(model_name)
     path = os.path.join(dir_path, "predictions.pkl")
     with open(path, "wb") as f:
@@ -12,14 +12,14 @@ def save_predictions(true_values, predicted_values, model_name):
     print(f"Predictions saved to: {path}")
 
 def save_metrics_df(metrics_df, model_name):
-    """Salva o DataFrame de métricas (accuracy, precision, recall, f1) em CSV."""
+    """Saves the metrics DataFrame (accuracy, precision, recall, f1) to CSV."""
     dir_path = ensure_model_dir(model_name)
     path = os.path.join(dir_path, "metrics.csv")
     metrics_df.to_csv(path, index=False)
     print(f"Metrics saved to: {path}")
 
 def save_strategy_results(strategies, model_name):
-    """Salva os resultados das estratégias SL em pickle."""
+    """Saves the SL strategies results as a pickle file."""
     dir_path = ensure_model_dir(model_name)
     results = {}
     for s in strategies:

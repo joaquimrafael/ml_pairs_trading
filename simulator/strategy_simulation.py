@@ -10,7 +10,6 @@ class TradingSimulator:
         mean_reversion_strategy = SLTradingStrategy("mean reversion", trade_thresholds)
         hybrid_strategy = SLTradingStrategy("hybrid", trade_thresholds)
         ground_truth_strategy = SLTradingStrategy("ground truth", trade_thresholds)
-        # REPLACED: 'threshold-based' -> 'momentum'
         momentum_strategy = SLTradingStrategy("momentum", trade_thresholds)
         return pure_forcasting_strategy, mean_reversion_strategy, hybrid_strategy, ground_truth_strategy, momentum_strategy
 
@@ -90,7 +89,6 @@ class TradingSimulator:
         hybrid_strategy.display_confusion_matrix()
         print (f"\n")
         
-        # Strategies to plot (exclude ground truth from plots if you prefer benchmark only)
         self.strategies = [
             pure_forcasting_strategy,
             mean_reversion_strategy,
