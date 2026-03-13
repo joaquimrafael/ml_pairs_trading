@@ -356,6 +356,72 @@ def plot_strategy_profits(all_models_data: Dict[str, Dict[str, Any]], save_path:
             title="Sharpe Ratio by Strategy and Model", legend_title="Model")
 
 # =========================================================
+# Pair analysis helpers
+# =========================================================
+def load_pair_analysis(base_dir: str, dataset_name: str) -> Optional[pd.DataFrame]:
+    """Load pair_analysis_results.csv saved by run_trading_strategy.py."""
+    path = os.path.join(base_dir, dataset_name, "pair_analysis", "pair_analysis_results.csv")
+    if not os.path.exists(path):
+        print(f"[Pair Analysis] No results found at {path} — skipping.")
+        return None
+    return pd.read_csv(path)
+
+
+def plot_pair_analysis_table(pair_df: pd.DataFrame, outdir: str):
+    """
+    Renders the pair analysis results as a formatted table image.
+    Shows Pearson r, Engle-Granger p-value, ADF p-value, and pass/fail at 5%.
+    """
+    cols_to_show = [
+        "pair_name",
+        "pearson_r", "pearson_p_value",
+        "eg_p_value", "cointegrated",
+        "adf_p_value", "spread_stationary",
+    ]
+    cols_to_show = [c for c in cols_to_show if c in pair_df.columns]
+    display_df = pair_df[cols_to_show].copy()
+
+    # Round floats for readability
+    for col in display_df.select_dtypes(include="float").columns:
+        display_df[col] = display_df[col].apply(lambda x: f"{x:.4f}")
+
+    rename_map = {
+        "pair_name": "Pair",
+        "pearson_r": "Pearson r",
+        "pearson_p_value": "Pearson p",
+        "eg_p_value": "EG p-value",
+        "cointegrated": "Cointegrated?",
+        "adf_p_value": "ADF p-value",
+        "spread_stationary": "Spread Stationary?",
+    }
+    display_df = display_df.rename(columns={k: v for k, v in rename_map.items() if k in display_df.columns})
+
+    _, ax = plt.subplots(figsize=(max(10, len(display_df.columns) * 1.8), 1.2 + 0.6 * len(display_df)))
+    ax.axis("off")
+    table = ax.table(
+        cellText=display_df.values,
+        colLabels=display_df.columns,
+        cellLoc="center",
+        loc="center",
+    )
+    table.auto_set_font_size(False)
+    table.set_fontsize(10)
+    table.scale(1, 1.6)
+
+    # Highlight header row
+    for j in range(len(display_df.columns)):
+        table[(0, j)].set_facecolor("#2C3E50")
+        table[(0, j)].set_text_props(color="white", fontweight="bold")
+
+    plt.title("Pair Analysis — Correlation & Cointegration Summary", fontsize=13, pad=12)
+    plt.tight_layout()
+    save_path = os.path.join(outdir, "pair_analysis_summary.png")
+    plt.savefig(save_path, bbox_inches="tight")
+    plt.close()
+    print(f"Saved: {save_path}")
+
+
+# =========================================================
 # Main
 # =========================================================
 def main():
@@ -409,6 +475,11 @@ def main():
 
     # Optional legacy context: strategy comparison (secondary)
     plot_strategy_profits(all_models_data, save_path=outdir)
+
+    # Pair analysis summary (loaded from pair_analysis_results.csv saved during training)
+    pair_df = load_pair_analysis(args.base_dir, args.dataset)
+    if pair_df is not None:
+        plot_pair_analysis_table(pair_df, outdir)
 
 if __name__ == "__main__":
     main()

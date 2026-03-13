@@ -93,7 +93,7 @@ class TradingSimulator:
             pure_forcasting_strategy,
             mean_reversion_strategy,
             hybrid_strategy,
-            momentum_strategy
+            ground_truth_strategy
         ]
         graphics.plot_trading_strategy_performance(self.strategies, model_name)
         graphics.plot_confusion_matrices(self.strategies, model_name)

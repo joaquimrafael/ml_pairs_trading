@@ -1,11 +1,13 @@
 from utils import ModelConfig
 from data_processing import DataProcessor
+from data_processing import PairSelector
 from models import DartsFinancialForecastingModel
 from models import TfFinancialForecastingModel
 from simulator import TradingSimulator
 from metrics import ModelEvaluationMetrics
 from matplotlib import pyplot as plt
 from plot.save_data import *
+from plot.pair_analysis_plot import plot_rolling_correlation, plot_spread_with_bands, save_pair_analysis_csv
 import random
 import numpy as np
 from models import MultiAgentReplayBuffer
@@ -29,6 +31,16 @@ def run_sl_based_trading_strategy(model_name, model_config, trade_thresholds):
 
     # Initialize a DataProcessor instance to preprocess and manage the dataset.
     dataProcessor = DataProcessor(model_config)
+
+    # --- Pair analysis: runs automatically before training ---
+    series_a, series_b = dataProcessor.get_price_series()
+    pair_name = f"{dataProcessor.data_df.columns[2]}/{dataProcessor.data_df.columns[1]}"
+    selector = PairSelector()
+    analysis_results = selector.run_full_analysis(series_a, series_b, pair_name)
+    plot_rolling_correlation(series_a, series_b, model_config.DATA_FILE_PATH)
+    plot_spread_with_bands(series_a - series_b, model_config.DATA_FILE_PATH)
+    save_pair_analysis_csv(analysis_results, model_config.DATA_FILE_PATH)
+    # --- End pair analysis ---
 
     # Initialize a trading simulator.
     trading_simulator = TradingSimulator()

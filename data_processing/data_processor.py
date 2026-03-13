@@ -30,6 +30,11 @@ class DataProcessor:
         denominator_column_name = self.data_df.columns[1]
         return (self.data_df[numerator_column_name].values)[-test_size:], (self.data_df[denominator_column_name].values)[-test_size:]
 
+    def get_price_series(self):
+        """Returns the raw numerator and denominator price arrays."""
+        df = self.load_and_prepare_data()
+        return df.iloc[:, 2].values, df.iloc[:, 1].values
+
     def plot_ratio(self):
         """Plots the ratio time series."""
         df = self.load_and_calculate_ratio()
