@@ -37,8 +37,33 @@ def run_sl_based_trading_strategy(model_name, model_config, trade_thresholds):
     pair_name = f"{dataProcessor.data_df.columns[2]}/{dataProcessor.data_df.columns[1]}"
     selector = PairSelector()
     analysis_results = selector.run_full_analysis(series_a, series_b, pair_name)
+
+    # Use OLS hedge ratio beta to compute spread (replaces beta=1 assumption)
+    dataProcessor.set_hedge_ratio(analysis_results["hedge_ratio_beta"])
+
+    # Use computed half-life as INPUT_CHUNK_LENGTH.
+    # Fallback to ADF lags when half-life is unreliable (λ ≈ 0 → half-life explodes).
+    # Also capped to fit Darts validation split (10% of data).
+    hl = analysis_results.get("half_life_bars")
+    adf_lags = analysis_results.get("adf_lags_used", 50)
+    val_size = int(len(dataProcessor.data_df) * 0.1)  # mirrors split_and_scale_data validation_ratio=0.1
+    max_safe = max(5, val_size - model_config.OUTPUT_CHUNK_LENGTH - 1)
+
+    if hl is not None and hl <= max_safe:
+        window = max(5, int(round(hl)))
+        print(f"[Half-life] INPUT_CHUNK_LENGTH set to {window} bars (half-life = {hl:.1f})")
+    else:
+        window = min(max(5, adf_lags), max_safe)
+        reason = f"half-life = {hl:.1f} exceeds max safe {max_safe}" if hl is not None else "mean-reversion not detected"
+        print(f"[Half-life] Fallback to ADF lags: INPUT_CHUNK_LENGTH = {window} bars ({reason})")
+
+    model_config.INPUT_CHUNK_LENGTH = window
+
+    # Derive thresholds from sigma of ratio changes in training data
+    trade_thresholds = dataProcessor.compute_sigma_thresholds()
+
     plot_rolling_correlation(series_a, series_b, model_config.DATA_FILE_PATH)
-    plot_spread_with_bands(series_a - series_b, model_config.DATA_FILE_PATH)
+    plot_spread_with_bands(series_a - analysis_results["hedge_ratio_beta"] * series_b, model_config.DATA_FILE_PATH)
     save_pair_analysis_csv(analysis_results, model_config.DATA_FILE_PATH)
     # --- End pair analysis ---
 

@@ -35,6 +35,26 @@ class DataProcessor:
         df = self.load_and_prepare_data()
         return df.iloc[:, 2].values, df.iloc[:, 1].values
 
+    def set_hedge_ratio(self, beta):
+        """Recomputes the difference column using the OLS hedge ratio beta.
+        Replaces the beta=1 assumption with the statistically estimated coefficient."""
+        df = self.load_and_prepare_data()
+        numerator_col = df.columns[2]
+        denominator_col = df.columns[1]
+        df['difference'] = df[numerator_col] - beta * df[denominator_col]
+        print(f"[Hedge ratio] difference = {numerator_col} - {beta:.6f} * {denominator_col}")
+
+    def compute_sigma_thresholds(self):
+        """Derives 4 trading thresholds from the σ of ratio changes in the training split.
+        Returns [0, 0.5σ, 1.0σ, 2.0σ] where σ is computed on training data only."""
+        df = self.load_and_prepare_data()
+        ratio_changes = df['ratio'].diff().dropna().values
+        split = int(len(ratio_changes) * self.model_config.TRAIN_RATIO)
+        sigma = float(np.std(ratio_changes[:split]))
+        thresholds = [0.0, round(0.5 * sigma, 8), round(1.0 * sigma, 8), round(2.0 * sigma, 8)]
+        print(f"[σ-thresholds] σ = {sigma:.8f}  →  thresholds = {thresholds}")
+        return thresholds
+
     def plot_ratio(self):
         """Plots the ratio time series."""
         df = self.load_and_calculate_ratio()
