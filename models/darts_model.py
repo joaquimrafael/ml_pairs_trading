@@ -107,32 +107,38 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
             )
 
         elif model_name == "random_forest":
+            # Lags capped at INPUT_CHUNK_LENGTH (ADF-derived window) with hard bounds [6, 48]
             rf_lags = max(6, min(48, in_len if in_len is not None else 24))
             return RegressionModel(
                 lags=rf_lags,
+                output_chunk_length=out_len,
                 model=RandomForestRegressor(
-                    n_estimators=400,
-                    max_depth=8,
-                    min_samples_leaf=5,
+                    n_estimators=600,      # 400 → 600: more trees reduce variance of leaf averages
+                    max_depth=6,           # 8 → 6: shallower trees force predictions closer to the mean, reducing directional bias
+                    min_samples_leaf=30,   # 5 → 30: each leaf must aggregate 30 samples, smoothing out local trend noise
+                    max_features=0.5,      # default sqrt → 0.5: each split considers 50% of lags, increasing diversity between trees
+                    bootstrap=True,
                     random_state=42,
                     n_jobs=-1,
                 ),
             )
 
         elif model_name == "lstm":
-            train_len = (in_len or 50) + (out_len or 1)
+            # training_length must be > input_chunk_length for Darts RNNModel.
+            # 3x window allows BPTT to capture patterns spanning multiple input windows.
+            train_len = max(3 * (in_len or 62), 100)
             return RNNModel(
                 model="LSTM",
                 input_chunk_length=in_len,
                 output_chunk_length=out_len,
                 training_length=train_len,
-                hidden_dim=128,
-                n_rnn_layers=2,
-                dropout=0.2,
+                hidden_dim=256,       # 128 → 256: more capacity to represent 62-lag dynamics
+                n_rnn_layers=3,       # 2 → 3: deeper hierarchy for multi-scale temporal patterns
+                dropout=0.3,          # 0.2 → 0.3: stronger regularization to reduce directional bias
                 batch_size=bs,
                 n_epochs=n_epochs,
                 random_state=42,
-                optimizer_kwargs={"lr": lr},
+                optimizer_kwargs={"lr": 2e-4},  # 5e-4 → 2e-4: slower convergence avoids local minima
                 pl_trainer_kwargs=trainer,
             )
 

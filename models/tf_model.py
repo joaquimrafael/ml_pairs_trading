@@ -4,7 +4,7 @@ from sklearn.utils import shuffle
 from sklearn.preprocessing import MinMaxScaler
 from keras import Model, Input
 from keras.optimizers import Adam
-from keras.layers import MultiHeadAttention, Dense, Bidirectional, LSTM, GlobalAveragePooling1D, GlobalMaxPooling1D, concatenate
+from keras.layers import MultiHeadAttention, Dense, Bidirectional, LSTM, GlobalAveragePooling1D, GlobalMaxPooling1D, concatenate, Dropout
 
 class TfFinancialForecastingModel(FinancialForecastingModel):
     """A financial forecasting model based on the Tensorflow library."""
@@ -19,21 +19,25 @@ class TfFinancialForecastingModel(FinancialForecastingModel):
         if model_name == "bilstm":
             inp = Input(shape = (self.model_config.INPUT_CHUNK_LENGTH, 1))
 
-            x = Bidirectional(LSTM(128, return_sequences=True))(inp)
-            x = Bidirectional(LSTM(128, return_sequences=True))(x)
+            # dropout=0.2 adicionado: regularização dentro de cada camada BiLSTM
+            x = Bidirectional(LSTM(128, return_sequences=True, dropout=0.2))(inp)
+            x = Bidirectional(LSTM(128, return_sequences=True, dropout=0.2))(x)
 
-            x = MultiHeadAttention(num_heads=16, key_dim=128, dropout=0.1)(x, x, x)
+            # num_heads 16→8, key_dim 128→64: reduz parâmetros da atenção
+            # dropout 0.1→0.2: regularização mais forte no mecanismo de atenção
+            x = MultiHeadAttention(num_heads=8, key_dim=64, dropout=0.2)(x, x, x)
 
             avg_pool = GlobalAveragePooling1D()(x)
             max_pool = GlobalMaxPooling1D()(x)
             conc = concatenate([avg_pool, max_pool])
-            conc = Dense(512, activation="relu")(conc)
+            conc = Dense(256, activation="relu")(conc)  # 512→256: head mais simples
+            conc = Dropout(0.3)(conc)                   # dropout antes da saída
             x = Dense(1, activation="sigmoid")(conc)
 
             model = Model(inputs = inp, outputs = x)
             model.compile(
                 loss = "mean_squared_error",
-                optimizer = Adam(learning_rate=0.0001))
+                optimizer = Adam(learning_rate=0.00005))  # 1e-4→5e-5: LR menor para janela de 62 lags
 
             return model
 

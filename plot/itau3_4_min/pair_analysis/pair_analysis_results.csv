@@ -1,0 +1,2 @@
+pair_name,pearson_r,pearson_p_value,eg_statistic,eg_p_value,eg_crit_1pct,eg_crit_5pct,eg_crit_10pct,cointegrated,hedge_ratio_beta,adf_statistic,adf_p_value,adf_lags_used,adf_crit_1pct,adf_crit_5pct,adf_crit_10pct,spread_stationary,half_life_bars,ar1_lambda
+itau3/itau4,0.990866765613434,0.0,-4.013855865854911,0.00686127113277807,-3.8965535112604988,-3.336193327018582,-3.044493956928369,True,0.7394905765411472,-4.01413815254604,0.0013382625006094016,62,-3.4304178199835498,-2.8615699753579458,-2.5667859548362624,True,26080.827438303393,-2.6576886112975094e-05
