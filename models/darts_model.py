@@ -94,11 +94,11 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
                 input_chunk_length=in_len,
                 output_chunk_length=out_len,
                 kernel_size=3,
-                num_filters=32,
+                num_filters=32,       # keep: fewer filters converge faster in 3 epochs (MASE=4.61 baseline)
                 num_layers=6,
                 dilation_base=2,
                 weight_norm=True,
-                dropout=0.1,
+                dropout=0.1,          # keep: minimal dropout allows maximum learning per epoch
                 n_epochs=n_epochs,
                 batch_size=bs,
                 model_name="tcn",
@@ -124,21 +124,21 @@ class DartsFinancialForecastingModel(FinancialForecastingModel):
             )
 
         elif model_name == "lstm":
-            # training_length must be > input_chunk_length for Darts RNNModel.
-            # 3x window allows BPTT to capture patterns spanning multiple input windows.
-            train_len = max(3 * (in_len or 62), 100)
+            # training_length = in_len+1 is the minimum valid value for Darts RNNModel,
+            # maximizing gradient updates per epoch — important for 3-epoch budget.
+            train_len = (in_len or 62) + 1
             return RNNModel(
                 model="LSTM",
                 input_chunk_length=in_len,
                 output_chunk_length=out_len,
                 training_length=train_len,
-                hidden_dim=256,       # 128 → 256: more capacity to represent 62-lag dynamics
-                n_rnn_layers=3,       # 2 → 3: deeper hierarchy for multi-scale temporal patterns
-                dropout=0.3,          # 0.2 → 0.3: stronger regularization to reduce directional bias
+                hidden_dim=128,
+                n_rnn_layers=2,
+                dropout=0.1,          # 0.2 → 0.1: reduce suppression of learning signal in 3-epoch budget
                 batch_size=bs,
                 n_epochs=n_epochs,
                 random_state=42,
-                optimizer_kwargs={"lr": 2e-4},  # 5e-4 → 2e-4: slower convergence avoids local minima
+                optimizer_kwargs={"lr": lr},
                 pl_trainer_kwargs=trainer,
             )
 
