@@ -50,17 +50,19 @@ def run_sl_based_trading_strategy(model_name, model_config, trade_thresholds):
     adf_lags = analysis_results.get("adf_lags_used", 50)
     val_size = int(len(dataProcessor.data_df) * 0.1)  # mirrors split_and_scale_data validation_ratio=0.1
     max_safe = max(5, val_size - model_config.OUTPUT_CHUNK_LENGTH - 1)
-    max_memory_safe = 512  # hard cap: prevents LSTM OOM for pairs with large half-lives
+    max_memory_safe = 128  # LSTM BPTT memory scales with seq_len × batch_size; >128 is slow on 8 GB GPUs
 
-    if hl is not None and hl <= max_safe:
-        window = max(5, min(int(round(hl)), max_memory_safe))
-        if int(round(hl)) > max_memory_safe:
-            print(f"[Half-life] INPUT_CHUNK_LENGTH capped at {window} bars (half-life = {hl:.1f} exceeds memory cap {max_memory_safe})")
-        else:
-            print(f"[Half-life] INPUT_CHUNK_LENGTH set to {window} bars (half-life = {hl:.1f})")
+    if hl is not None and hl <= max_safe and hl <= max_memory_safe:
+        window = max(5, int(round(hl)))
+        print(f"[Half-life] INPUT_CHUNK_LENGTH set to {window} bars (half-life = {hl:.1f})")
     else:
-        window = min(max(5, adf_lags), max_safe, max_memory_safe)
-        reason = f"half-life = {hl:.1f} exceeds max safe {max_safe}" if hl is not None else "mean-reversion not detected"
+        window = min(max(5, adf_lags), max_safe)
+        if hl is not None and hl > max_memory_safe:
+            reason = f"half-life = {hl:.1f} exceeds memory cap {max_memory_safe}"
+        elif hl is not None:
+            reason = f"half-life = {hl:.1f} exceeds validation cap {max_safe}"
+        else:
+            reason = "mean-reversion not detected"
         print(f"[Half-life] Fallback to ADF lags: INPUT_CHUNK_LENGTH = {window} bars ({reason})")
 
     model_config.INPUT_CHUNK_LENGTH = window
