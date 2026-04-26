@@ -1,0 +1,1093 @@
+python run_trading_strategy.py --sl --sl_model lstm --data_path dataset/petr3_4_min.csv --n_epochs 3
+2026-04-26 10:26:01.349180: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-04-26 10:26:02.637386: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+============================================================
+PAIR ANALYSIS REPORT -- petr3/petr4
+============================================================
+Pearson Correlation : r = 0.9801  (p = 0.0000e+00)
+
+Engle-Granger Test  : stat = -3.7792  (p = 1.4445e-02)
+  Critical values   : 1% = -3.8966  5% = -3.3362  10% = -3.0445
+  Result            : COINTEGRATED (p < 0.05)
+  Hedge ratio (β)   : 0.992447
+
+ADF on Spread       : stat = -3.7792  (p = 3.1274e-03)  lags = 28
+  Critical values   : 1% = -3.4304  5% = -2.8616  10% = -2.5668
+  Result            : Spread IS stationary (mean-reversion justified)
+
+Mean-Reversion      : half-life = 45058.3 bars (~180233 min)  (λ = -0.000015)
+============================================================
+[Hedge ratio] difference = petr3 - 0.992447 * petr4
+[Half-life] Fallback to ADF lags: INPUT_CHUNK_LENGTH = 28 bars (half-life = 45058.3 exceeds max safe 9532)
+[σ-thresholds] σ = 0.00069330  →  thresholds = [0.0, 0.00034665, 0.0006933, 0.00138659]
+Plot saved to: plot/petr3_4_min/pair_analysis/rolling_correlation.png
+Plot saved to: plot/petr3_4_min/pair_analysis/spread_with_bands.png
+Pair analysis CSV saved to: plot/petr3_4_min/pair_analysis/pair_analysis_results.csv
+ignoring user defined `output_chunk_length`. RNNModel uses a fixed `output_chunk_length=1`.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+`Trainer.fit` stopped: `max_epochs=3` reached.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+Plot saved to: plot/petr3_4_min/lstm/predictions_vs_true.png
+Plot saved to: plot/petr3_4_min/lstm/error_distribution.png
+Plot saved to: plot/petr3_4_min/lstm/correlation_heatmap.png
+Prediction Error: {'RMSE': 0.003826124311986176, 'MASE': 20.507705104420683, 'MAPE': 0.27118099359769676, 'sMAPE': 0.2717340326838418}
+
+
+Plot saved to: plot/petr3_4_min/lstm/metrics_plot.png
+_____Total Profits_____
+Total Profits - pure forcasting strategy = [8.59809999648166, 8.92034317669109, 11.348577089209927, 11.088958866100585]
+Best Trade Threshold - pure forcasting strategy = 0.0006933
+Total Profits - mean reversion strategy = [24.084542921821335, 22.840335174517858, 23.750331251787312, 24.092062127319327]
+Best Trade Threshold - mean reversion strategy = 0.00138659
+Total Profits - hybrid strategy = [43.6259783574949, 35.402905282376175, 21.98543627418766, 5.890992045919922]
+Best Trade Threshold - hybrid strategy = 0.0
+Total Profits - ground truth strategy = [264.8367465001111, 229.42854041744093, 155.85407021656002, 50.593073707923885]
+Best Trade Threshold - ground truth strategy = 0.0
+Total Profits - momentum strategy = [0.24940265714377988, 0.23837750043505693, -0.718905797104446, -1.585995960933526]
+Best Trade Threshold - momentum strategy = 0.0
+
+
+_____Profits per Trade_____
+Profits per Trade - pure forcasting strategy = [0.00045158088216815437, 0.0004954920389207959, 0.0006739060029222047, 0.0007831185639901543]
+Profits per Trade - mean reversion strategy = [0.0012649444811880953, 0.0012810058987390834, 0.0014310876868996933, 0.001709990923934937]
+Profits per Trade - hybrid strategy = [0.004544372745572386, 0.006258247354141095, 0.008047377845603096, 0.011242351232671607]
+Profits per Trade - ground truth strategy = [0.014498097470855153, 0.020914178707150496, 0.029434196452608124, 0.04777438499331812]
+Profits per Trade - momentum strategy = [1.3098879051669112e-05, 1.3159122298374658e-05, -4.2465934024717705e-05, -0.00011207659959957076]
+
+
+_____Total Profits Statistics_____
+Total Profits Std Dev - pure forcasting strategy = [2.4324297365193144, 2.4461323647481206, 2.3733726311976624, 2.023402692237831]
+Total Profits Std Error - pure forcasting strategy = [0.07692018215724285, 0.07735349730857831, 0.07505263250891414, 0.06398561131188248]
+Total Profits Confidence - pure forcasting strategy = [array([ 3.73949675, 13.25032272]), array([ 4.33610459, 13.87636709]), array([ 6.57320214, 15.76621316]), array([ 7.19574109, 15.19028321])]
+Total Profits Std Dev - mean reversion strategy = [2.821646734769309, 2.606387107795296, 2.448227474830999, 2.0965141155713787]
+Total Profits Std Error - mean reversion strategy = [0.08922830434248037, 0.08242119724731939, 0.07741975050668512, 0.06629759751899039]
+Total Profits Confidence - mean reversion strategy = [array([18.46858888, 29.64750947]), array([17.85997456, 27.95800808]), array([18.98253861, 28.69530445]), array([19.85108267, 28.0880275 ])]
+Total Profits Std Dev - hybrid strategy = [1.8741341895019745, 1.7279497855375074, 1.506247960577088, 0.9329943352350716]
+Total Profits Std Error - hybrid strategy = [0.05926532679619866, 0.05464257004698002, 0.047631742764071075, 0.02950387143377515]
+Total Profits Confidence - hybrid strategy = [array([39.51441873, 47.07901353]), array([31.9508561 , 38.91573017]), array([19.2616659 , 24.93547414]), array([4.1014146 , 7.81595867])]
+Total Profits Std Dev - ground truth strategy = [4.4662025675525685, 4.554424489226868, 4.767574589641492, 3.3514201240406294]
+Total Profits Std Error - ground truth strategy = [0.14123372605158144, 0.14402354817205906, 0.1507639461800972, 0.10598120988092422]
+Total Profits Confidence - ground truth strategy = [array([256.53988053, 274.09537745]), array([221.05678569, 238.62105331]), array([147.17826173, 165.48686054]), array([44.16013333, 57.24039528])]
+Total Profits Std Dev - momentum strategy = [2.269860583608311, 2.075293141407657, 2.0251683848131203, 1.9087389668139616]
+Total Profits Std Error - momentum strategy = [0.07177929415241321, 0.06562653139374092, 0.0640414474137381, 0.06035962593848664]
+Total Profits Confidence - momentum strategy = [array([-4.11567059,  4.79494822]), array([-3.83948735,  4.24843993]), array([-4.64725488,  3.1170608 ]), array([-5.40305317,  2.23079168])]
+
+
+_____Profits per Trade Statistics_____
+Profits per Trade Std Dev - pure forcasting strategy = [0.00012912142539975896, 0.00012984526953590845, 0.000139404114313581, 0.0001426323623659042]
+Profits per Trade Std Error - pure forcasting strategy = [4.083177989907557e-06, 4.1060679513194515e-06, 4.408345164293962e-06, 4.510431331267399e-06]
+Profits per Trade Confidence Interval - pure forcasting strategy = [array([0.00021571, 0.00070104]), array([0.00025768, 0.00075278]), array([0.00040883, 0.00093213]), array([0.00049753, 0.00105735])]
+Profits per Trade Std Dev - mean reversion strategy = [0.00014519847629609453, 0.00014615303850950054, 0.00014795617707800168, 0.00015566377696751732]
+Profits per Trade Std Error - mean reversion strategy = [4.591578978816277e-06, 4.621764886443225e-06, 4.6787851345768155e-06, 4.922520844018131e-06]
+Profits per Trade Confidence Interval - mean reversion strategy = [array([0.00096228, 0.00154246]), array([0.00100879, 0.00158257]), array([0.00113943, 0.00171276]), array([0.0014159 , 0.00202286])]
+Profits per Trade Std Dev - hybrid strategy = [0.0002053349176679952, 0.0002983191022646844, 0.000556956537166052, 0.0018435239201005935]
+Profits per Trade Std Error - hybrid strategy = [6.493260229940146e-06, 9.433678326930978e-06, 1.761251215164946e-05, 5.829734508520143e-05]
+Profits per Trade Confidence Interval - hybrid strategy = [array([0.00414581, 0.00496568]), array([0.00564644, 0.00680278]), array([0.00700068, 0.00912269]), array([0.00738912, 0.01474391])]
+Profits per Trade Std Dev - ground truth strategy = [0.00023934373115880626, 0.0004071147366005569, 0.0009074127214838458, 0.003226657019734167]
+Profits per Trade Std Error - ground truth strategy = [7.568713341448395e-06, 1.2874098366772751e-05, 2.869490977700957e-05, 0.00010203585410530838]
+Profits per Trade Confidence Interval - ground truth strategy = [array([0.01405495, 0.01495429]), array([0.02016807, 0.02173307]), array([0.02778412, 0.03118151]), array([0.04177388, 0.05454739])]
+Profits per Trade Std Dev - momentum strategy = [0.0001215713774604329, 0.00011334510982835489, 0.00012104178537518785, 0.0001297366247999463]
+Profits per Trade Std Error - momentum strategy = [3.844424510590246e-06, 3.5842870869953807e-06, 3.827677338388522e-06, 4.102632303105171e-06]
+Profits per Trade Confidence Interval - momentum strategy = [array([-0.00022898,  0.00024219]), array([-0.00020362,  0.00023633]), array([-0.00026241,  0.00020694]), array([-0.0003785 ,  0.00013546])]
+
+
+_____Sharpe Ratios_____
+Sharpe Ratios - pure forcasting strategy = [0.020594609481941605, 0.02206473745296877, 0.028942274700818282, 0.03079238247889444]
+Safest Trade Threshold - pure forcasting strategy = 0.00138659
+Sharpe Ratios - mean reversion strategy = [0.0577724724108853, 0.05680762795236852, 0.06153754606315569, 0.06747463306909085]
+Safest Trade Threshold - mean reversion strategy = 0.00138659
+Sharpe Ratios - hybrid strategy = [0.1434316756403871, 0.13858617614382185, 0.10563450913270929, 0.047121692008491124]
+Safest Trade Threshold - hybrid strategy = 0.0
+Sharpe Ratios - ground truth strategy = [0.8202952127278711, 0.709613041636654, 0.47780834157720564, 0.19346144592612666]
+Safest Trade Threshold - ground truth strategy = 0.0
+Sharpe Ratios - momentum strategy = [0.0005972554787102196, 0.0005869804818431983, -0.0018540099664811466, -0.004449152837348389]
+Safest Trade Threshold - momentum strategy = 0.0
+
+
+_____Number of Trades_____
+pure forcasting strategy: trades made = [19040, 18003, 16840, 14160], trades not made = [0, 1037, 2200, 4880]
+mean reversion strategy: trades made = [19040, 17830, 16596, 14089], trades not made = [0, 1210, 2444, 4951]
+hybrid strategy: trades made = [9600, 5657, 2732, 524], trades not made = [9440, 13383, 16308, 18516]
+ground truth strategy: trades made = [18267, 10970, 5295, 1059], trades not made = [773, 8070, 13745, 17981]
+momentum strategy: trades made = [19040, 18115, 16929, 14151], trades not made = [0, 925, 2111, 4889]
+
+
+_____Confusion Matrix_____
+pure forcasting strategy v/s ground truth for thresold = 0.0: TP = 8892, FP = 8626, FN = 300, TN = 449
+pure forcasting strategy v/s ground truth for thresold = 0.00034665: TP = 8619, FP = 8261, FN = 151, TN = 237
+pure forcasting strategy v/s ground truth for thresold = 0.0006933: TP = 8241, FP = 7707, FN = 77, TN = 120
+pure forcasting strategy v/s ground truth for thresold = 0.00138659: TP = 7042, FP = 6479, FN = 28, TN = 31
+mean reversion strategy v/s ground truth for thresold = 0.0: TP = 8632, FP = 8056, FN = 560, TN = 1019
+mean reversion strategy v/s ground truth for thresold = 0.00034665: TP = 8378, FP = 7694, FN = 359, TN = 672
+mean reversion strategy v/s ground truth for thresold = 0.0006933: TP = 8022, FP = 7221, FN = 236, TN = 444
+mean reversion strategy v/s ground truth for thresold = 0.00138659: TP = 7072, FP = 6141, FN = 106, TN = 206
+hybrid strategy v/s ground truth for thresold = 0.0: TP = 5245, FP = 3380, FN = 235, TN = 387
+hybrid strategy v/s ground truth for thresold = 0.00034665: TP = 3348, FP = 1824, FN = 107, TN = 189
+hybrid strategy v/s ground truth for thresold = 0.0006933: TP = 1706, FP = 802, FN = 49, TN = 86
+hybrid strategy v/s ground truth for thresold = 0.00138659: TP = 340, FP = 144, FN = 17, TN = 14
+
+
+Plot saved to: plot/petr3_4_min/lstm/total_profit_vs_threshold.png
+Plot saved to: plot/petr3_4_min/lstm/sharpe_ratio_vs_threshold.png
+Plot saved to: plot/petr3_4_min/lstm/num_trades_vs_threshold.png
+Plot saved to: plot/petr3_4_min/lstm/profit_per_trade_vs_threshold.png
+Plot saved to: plot/petr3_4_min/lstm/confusion_matrices_pure_forcasting.png
+Plot saved to: plot/petr3_4_min/lstm/confusion_matrices_mean_reversion.png
+Plot saved to: plot/petr3_4_min/lstm/confusion_matrices_hybrid.png
+Plot saved to: plot/petr3_4_min/lstm/confusion_matrices_ground_truth.png
+Plot saved to: plot/petr3_4_min/lstm/accuracy_vs_threshold.png
+Plot saved to: plot/petr3_4_min/lstm/hitrate_summary_best_sharpe.png
+Plot saved to: plot/petr3_4_min/lstm/classification_curves_pure_forcasting.png
+Plot saved to: plot/petr3_4_min/lstm/classification_curves_mean_reversion.png
+Plot saved to: plot/petr3_4_min/lstm/classification_curves_hybrid.png
+Plot saved to: plot/petr3_4_min/lstm/classification_curves_ground_truth.png
+Plot saved to: plot/petr3_4_min/lstm/cumulative_pnl_best_sharpe.png
+Plot saved to: plot/petr3_4_min/lstm/cumulative_pnl_best_profit.png
+Plot saved to: plot/petr3_4_min/lstm/trade_return_distribution.png
+Plot saved to: plot/petr3_4_min/lstm/model_performance_curves.png
+Predictions saved to: plot/petr3_4_min/lstm/predictions.pkl
+Metrics saved to: plot/petr3_4_min/lstm/metrics.csv
+Strategy results saved to: plot/petr3_4_min/lstm/strategies.pkl
+
+python run_trading_strategy.py --sl --sl_model nbeats --data_path dataset/petr3_4_min.csv --n_epochs 3
+2026-04-26 10:34:40.312090: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-04-26 10:34:41.475084: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+============================================================
+PAIR ANALYSIS REPORT -- petr3/petr4
+============================================================
+Pearson Correlation : r = 0.9801  (p = 0.0000e+00)
+
+Engle-Granger Test  : stat = -3.7792  (p = 1.4445e-02)
+  Critical values   : 1% = -3.8966  5% = -3.3362  10% = -3.0445
+  Result            : COINTEGRATED (p < 0.05)
+  Hedge ratio (β)   : 0.992447
+
+ADF on Spread       : stat = -3.7792  (p = 3.1274e-03)  lags = 28
+  Critical values   : 1% = -3.4304  5% = -2.8616  10% = -2.5668
+  Result            : Spread IS stationary (mean-reversion justified)
+
+Mean-Reversion      : half-life = 45058.3 bars (~180233 min)  (λ = -0.000015)
+============================================================
+[Hedge ratio] difference = petr3 - 0.992447 * petr4
+[Half-life] Fallback to ADF lags: INPUT_CHUNK_LENGTH = 28 bars (half-life = 45058.3 exceeds max safe 9532)
+[σ-thresholds] σ = 0.00069330  →  thresholds = [0.0, 0.00034665, 0.0006933, 0.00138659]
+Plot saved to: plot/petr3_4_min/pair_analysis/rolling_correlation.png
+Plot saved to: plot/petr3_4_min/pair_analysis/spread_with_bands.png
+Pair analysis CSV saved to: plot/petr3_4_min/pair_analysis/pair_analysis_results.csv
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+`Trainer.fit` stopped: `max_epochs=3` reached.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+Plot saved to: plot/petr3_4_min/nbeats/predictions_vs_true.png
+Plot saved to: plot/petr3_4_min/nbeats/error_distribution.png
+Plot saved to: plot/petr3_4_min/nbeats/correlation_heatmap.png
+Prediction Error: {'RMSE': 0.0022702728163815663, 'MASE': 21.248632339083763, 'MAPE': 0.17241016583709204, 'sMAPE': 0.17221294270051302}
+
+
+Plot saved to: plot/petr3_4_min/nbeats/metrics_plot.png
+_____Total Profits_____
+Total Profits - pure forcasting strategy = [14.043346692100181, 15.171175148801083, 18.506535600155015, 27.223691766484997]
+Best Trade Threshold - pure forcasting strategy = 0.00138659
+Total Profits - mean reversion strategy = [34.51665385672077, 35.58154448115125, 37.32094728698427, 41.42490218429293]
+Best Trade Threshold - mean reversion strategy = 0.00138659
+Total Profits - hybrid strategy = [45.775470590785304, 36.02675508488472, 23.458162941369263, 7.742803096768113]
+Best Trade Threshold - hybrid strategy = 0.0
+Total Profits - ground truth strategy = [264.8367465001111, 229.42854041744093, 155.85407021656002, 50.593073707923885]
+Best Trade Threshold - ground truth strategy = 0.0
+Total Profits - momentum strategy = [1.1481267228928675, 1.7399251983260229, 2.123763756750409, 1.1624564050865809]
+Best Trade Threshold - momentum strategy = 0.0006933
+
+
+_____Profits per Trade_____
+Profits per Trade - pure forcasting strategy = [0.0007375707296271104, 0.0008415806927831078, 0.0011034185308940504, 0.00215343234982479]
+Profits per Trade - mean reversion strategy = [0.0018128494672647465, 0.0020229430030786998, 0.002334748031716251, 0.0033904814359382003]
+Profits per Trade - hybrid strategy = [0.004668108361287508, 0.006281910215324276, 0.008733493276756986, 0.01469222599007232]
+Profits per Trade - ground truth strategy = [0.014498097470855153, 0.020914178707150496, 0.029434196452608124, 0.04777438499331812]
+Profits per Trade - momentum strategy = [6.030077326118002e-05, 9.619223785526442e-05, 0.0001251923931119081, 9.118020276779205e-05]
+
+
+_____Total Profits Statistics_____
+Total Profits Std Dev - pure forcasting strategy = [2.54564933350164, 2.469632394675009, 2.2744991315133882, 2.131300432082387]
+Total Profits Std Error - pure forcasting strategy = [0.08050050017954762, 0.07809663350508919, 0.07192597791657168, 0.06739763743481347]
+Total Profits Confidence - pure forcasting strategy = [array([ 9.02783943, 18.89127582]), array([10.334209 , 20.0452576]), array([13.88889044, 22.9515617 ]), array([23.11904616, 31.41344388])]
+Total Profits Std Dev - mean reversion strategy = [3.1468209370386955, 2.995666517317267, 2.833902136904743, 2.464065759072976]
+Total Profits Std Error - mean reversion strategy = [0.09951121549747594, 0.09473129305026806, 0.08961585418637301, 0.07792060103102313]
+Total Profits Confidence - mean reversion strategy = [array([28.51675374, 40.85600138]), array([29.42950654, 41.12431009]), array([32.23572399, 43.16146186]), array([36.54772663, 46.13349089])]
+Total Profits Std Dev - hybrid strategy = [2.1592132667373174, 1.819466837815958, 1.6581195387203407, 1.0884297096006632]
+Total Profits Std Error - hybrid strategy = [0.06828031876942607, 0.05753659334642608, 0.052434343751840314, 0.03441916955333734]
+Total Profits Confidence - hybrid strategy = [array([41.7284364 , 50.42937661]), array([32.28267632, 39.74237577]), array([20.33574719, 26.83693716]), array([5.76831023, 9.89220776])]
+Total Profits Std Dev - ground truth strategy = [4.565191863478107, 4.414530595249734, 4.7010314982452766, 3.355608711103652]
+Total Profits Std Error - ground truth strategy = [0.14436404244259274, 0.1395997148148805, 0.14865966886648924, 0.10611366463389488]
+Total Profits Confidence - ground truth strategy = [array([256.24761454, 274.61130085]), array([221.41553005, 238.43243809]), array([147.06179632, 165.79301319]), array([44.49013662, 57.41214081])]
+Total Profits Std Dev - momentum strategy = [2.056343801240981, 2.1397121401147636, 2.021071308303644, 1.7603625870994801]
+Total Profits Std Error - momentum strategy = [0.06502730064290081, 0.0676636389987599, 0.06391188647855893, 0.05566755282980899]
+Total Profits Confidence - momentum strategy = [array([-2.66071881,  5.46096695]), array([-2.22431999,  6.05663276]), array([-1.70042689,  6.32203075]), array([-2.12893409,  4.55536071])]
+
+
+_____Profits per Trade Statistics_____
+Profits per Trade Std Dev - pure forcasting strategy = [0.00013379690760091054, 0.00013616698786897674, 0.00013923165830689985, 0.00017195592206196246]
+Profits per Trade Std Error - pure forcasting strategy = [4.231029719059722e-06, 4.305978237904838e-06, 4.402891626521066e-06, 5.437723708701988e-06]
+Profits per Trade Confidence Interval - pure forcasting strategy = [array([0.00047162, 0.00099273]), array([0.00056749, 0.0011128 ]), array([0.00082307, 0.00138335]), array([0.00179704, 0.00247828])]
+Profits per Trade Std Dev - mean reversion strategy = [0.00016682739421157387, 0.00016755428666098197, 0.00017750676805574302, 0.00019763535021521608]
+Profits per Trade Std Error - mean reversion strategy = [5.275545418193637e-06, 5.29853177573472e-06, 5.613256871513663e-06, 6.249778528451318e-06]
+Profits per Trade Confidence Interval - mean reversion strategy = [array([0.00148755, 0.00215955]), array([0.00170602, 0.00235854]), array([0.00200172, 0.00267401]), array([0.00298046, 0.00376197])]
+Profits per Trade Std Dev - hybrid strategy = [0.00021389603574335648, 0.0003404591849983985, 0.0006189801534522586, 0.0020169861605883205]
+Profits per Trade Std Error - hybrid strategy = [6.763986554297934e-06, 1.0766264749195689e-05, 1.9573871113496726e-05, 6.378270276497238e-05]
+Profits per Trade Confidence Interval - hybrid strategy = [array([0.00425771, 0.00510235]), array([0.00559658, 0.00694729]), array([0.00759665, 0.00996911]), array([0.01108575, 0.01876568])]
+Profits per Trade Std Dev - ground truth strategy = [0.00023522977826763745, 0.00041862940038602, 0.0008797648151618617, 0.003113319768441302]
+Profits per Trade Std Error - ground truth strategy = [7.4386187282211124e-06, 1.323822400730395e-05, 2.782060621188519e-05, 9.845181552702522e-05]
+Profits per Trade Confidence Interval - ground truth strategy = [array([0.01404152, 0.01496681]), array([0.02011606, 0.02179459]), array([0.02790568, 0.031222  ]), array([0.04201363, 0.05395137])]
+Profits per Trade Std Dev - momentum strategy = [0.00011493404655313921, 0.00011849609879430307, 0.0001245831142457097, 0.00013310612011650425]
+Profits per Trade Std Error - momentum strategy = [3.634533678077447e-06, 3.7471756603432983e-06, 3.9396639901341274e-06, 4.209185100761103e-06]
+Profits per Trade Confidence Interval - momentum strategy = [array([-0.00016196,  0.00027659]), array([-0.00012685,  0.00032464]), array([-0.00010128,  0.00035724]), array([-0.00017283,  0.00034598])]
+
+
+_____Sharpe Ratios_____
+Sharpe Ratios - pure forcasting strategy = [0.033649245972326575, 0.03839647531114801, 0.048827386276925504, 0.08230959095386763]
+Safest Trade Threshold - pure forcasting strategy = 0.00138659
+Sharpe Ratios - mean reversion strategy = [0.08294236441798772, 0.08889061202347835, 0.09765776586744708, 0.1252314186250423]
+Safest Trade Threshold - mean reversion strategy = 0.00138659
+Sharpe Ratios - hybrid strategy = [0.14864170693455112, 0.13947716209583605, 0.11178047808111856, 0.0540714571021305]
+Safest Trade Threshold - hybrid strategy = 0.0
+Sharpe Ratios - ground truth strategy = [0.8202952127278711, 0.709613041636654, 0.47780834157720564, 0.19346144592612666]
+Safest Trade Threshold - ground truth strategy = 0.0
+Sharpe Ratios - momentum strategy = [0.0027494793077229213, 0.004298997067511798, 0.005446053374990085, 0.0036163212434358826]
+Safest Trade Threshold - momentum strategy = 0.0006933
+
+
+_____Number of Trades_____
+pure forcasting strategy: trades made = [19040, 18027, 16772, 12642], trades not made = [0, 1013, 2268, 6398]
+mean reversion strategy: trades made = [19040, 17589, 15985, 12218], trades not made = [0, 1451, 3055, 6822]
+hybrid strategy: trades made = [9806, 5735, 2686, 527], trades not made = [9234, 13305, 16354, 18513]
+ground truth strategy: trades made = [18267, 10970, 5295, 1059], trades not made = [773, 8070, 13745, 17981]
+momentum strategy: trades made = [19040, 18088, 16964, 12749], trades not made = [0, 952, 2076, 6291]
+
+
+_____Confusion Matrix_____
+pure forcasting strategy v/s ground truth for thresold = 0.0: TP = 566, FP = 375, FN = 8626, TN = 8700
+pure forcasting strategy v/s ground truth for thresold = 0.00034665: TP = 333, FP = 215, FN = 8267, TN = 8467
+pure forcasting strategy v/s ground truth for thresold = 0.0006933: TP = 199, FP = 125, FN = 7653, TN = 8088
+pure forcasting strategy v/s ground truth for thresold = 0.00138659: TP = 73, FP = 45, FN = 5512, TN = 6461
+mean reversion strategy v/s ground truth for thresold = 0.0: TP = 1282, FP = 674, FN = 7910, TN = 8401
+mean reversion strategy v/s ground truth for thresold = 0.00034665: TP = 905, FP = 460, FN = 7375, TN = 8126
+mean reversion strategy v/s ground truth for thresold = 0.0006933: TP = 611, FP = 312, FN = 6682, TN = 7714
+mean reversion strategy v/s ground truth for thresold = 0.00138659: TP = 285, FP = 153, FN = 4855, TN = 6400
+hybrid strategy v/s ground truth for thresold = 0.0: TP = 484, FP = 282, FN = 3458, TN = 5171
+hybrid strategy v/s ground truth for thresold = 0.00034665: TP = 239, FP = 136, FN = 1870, TN = 3264
+hybrid strategy v/s ground truth for thresold = 0.0006933: TP = 118, FP = 65, FN = 799, TN = 1602
+hybrid strategy v/s ground truth for thresold = 0.00138659: TP = 27, FP = 16, FN = 137, TN = 341
+
+
+Plot saved to: plot/petr3_4_min/nbeats/total_profit_vs_threshold.png
+Plot saved to: plot/petr3_4_min/nbeats/sharpe_ratio_vs_threshold.png
+Plot saved to: plot/petr3_4_min/nbeats/num_trades_vs_threshold.png
+Plot saved to: plot/petr3_4_min/nbeats/profit_per_trade_vs_threshold.png
+Plot saved to: plot/petr3_4_min/nbeats/confusion_matrices_pure_forcasting.png
+Plot saved to: plot/petr3_4_min/nbeats/confusion_matrices_mean_reversion.png
+Plot saved to: plot/petr3_4_min/nbeats/confusion_matrices_hybrid.png
+Plot saved to: plot/petr3_4_min/nbeats/confusion_matrices_ground_truth.png
+Plot saved to: plot/petr3_4_min/nbeats/accuracy_vs_threshold.png
+Plot saved to: plot/petr3_4_min/nbeats/hitrate_summary_best_sharpe.png
+Plot saved to: plot/petr3_4_min/nbeats/classification_curves_pure_forcasting.png
+Plot saved to: plot/petr3_4_min/nbeats/classification_curves_mean_reversion.png
+Plot saved to: plot/petr3_4_min/nbeats/classification_curves_hybrid.png
+Plot saved to: plot/petr3_4_min/nbeats/classification_curves_ground_truth.png
+Plot saved to: plot/petr3_4_min/nbeats/cumulative_pnl_best_sharpe.png
+Plot saved to: plot/petr3_4_min/nbeats/cumulative_pnl_best_profit.png
+Plot saved to: plot/petr3_4_min/nbeats/trade_return_distribution.png
+Plot saved to: plot/petr3_4_min/nbeats/model_performance_curves.png
+Predictions saved to: plot/petr3_4_min/nbeats/predictions.pkl
+Metrics saved to: plot/petr3_4_min/nbeats/metrics.csv
+Strategy results saved to: plot/petr3_4_min/nbeats/strategies.pkl
+
+python run_trading_strategy.py --sl --sl_model nhits --data_path dataset/petr3_4_min.csv --n_epochs 3
+2026-04-26 10:41:42.161046: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-04-26 10:41:43.454835: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+============================================================
+PAIR ANALYSIS REPORT -- petr3/petr4
+============================================================
+Pearson Correlation : r = 0.9801  (p = 0.0000e+00)
+
+Engle-Granger Test  : stat = -3.7792  (p = 1.4445e-02)
+  Critical values   : 1% = -3.8966  5% = -3.3362  10% = -3.0445
+  Result            : COINTEGRATED (p < 0.05)
+  Hedge ratio (β)   : 0.992447
+
+ADF on Spread       : stat = -3.7792  (p = 3.1274e-03)  lags = 28
+  Critical values   : 1% = -3.4304  5% = -2.8616  10% = -2.5668
+  Result            : Spread IS stationary (mean-reversion justified)
+
+Mean-Reversion      : half-life = 45058.3 bars (~180233 min)  (λ = -0.000015)
+============================================================
+[Hedge ratio] difference = petr3 - 0.992447 * petr4
+[Half-life] Fallback to ADF lags: INPUT_CHUNK_LENGTH = 28 bars (half-life = 45058.3 exceeds max safe 9532)
+[σ-thresholds] σ = 0.00069330  →  thresholds = [0.0, 0.00034665, 0.0006933, 0.00138659]
+Plot saved to: plot/petr3_4_min/pair_analysis/rolling_correlation.png
+Plot saved to: plot/petr3_4_min/pair_analysis/spread_with_bands.png
+Pair analysis CSV saved to: plot/petr3_4_min/pair_analysis/pair_analysis_results.csv
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+`Trainer.fit` stopped: `max_epochs=3` reached.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+Plot saved to: plot/petr3_4_min/nhits/predictions_vs_true.png
+Plot saved to: plot/petr3_4_min/nhits/error_distribution.png
+Plot saved to: plot/petr3_4_min/nhits/correlation_heatmap.png
+Prediction Error: {'RMSE': 0.004503131900423755, 'MASE': 30.37801135291123, 'MAPE': 0.38499650257838847, 'sMAPE': 0.384190077820456}
+
+
+Plot saved to: plot/petr3_4_min/nhits/metrics_plot.png
+_____Total Profits_____
+Total Profits - pure forcasting strategy = [2.336401348898691, 2.695768383716734, 2.690782238805882, 3.255517868388628]
+Best Trade Threshold - pure forcasting strategy = 0.00138659
+Total Profits - mean reversion strategy = [6.363314482439319, 5.76216861226968, 6.1239191379018285, 7.964973093796368]
+Best Trade Threshold - mean reversion strategy = 0.00138659
+Total Profits - hybrid strategy = [39.98593460948949, 32.9928302621577, 22.253872916402557, 8.054268901245926]
+Best Trade Threshold - hybrid strategy = 0.0
+Total Profits - ground truth strategy = [264.8367465001111, 229.42854041744093, 155.85407021656002, 50.593073707923885]
+Best Trade Threshold - ground truth strategy = 0.0
+Total Profits - momentum strategy = [0.895295215976759, 0.31262687127451827, 0.43334651447413586, 0.8615700128959097]
+Best Trade Threshold - momentum strategy = 0.0
+
+
+_____Profits per Trade_____
+Profits per Trade - pure forcasting strategy = [0.00012271015487913295, 0.00014188254651140706, 0.00014197880111892582, 0.00017321191106084744]
+Profits per Trade - mean reversion strategy = [0.0003342076934054264, 0.0003043613253892711, 0.0003261220118171173, 0.00043299663461790526]
+Profits per Trade - hybrid strategy = [0.004335458593677707, 0.00596939212269906, 0.008448698905240151, 0.01488774288585199]
+Profits per Trade - ground truth strategy = [0.014498097470855153, 0.020914178707150496, 0.029434196452608124, 0.04777438499331812]
+Profits per Trade - momentum strategy = [4.702180756180457e-05, 1.644366038683559e-05, 2.2828136462842324e-05, 4.571390740679735e-05]
+
+
+_____Total Profits Statistics_____
+Total Profits Std Dev - pure forcasting strategy = [2.148432866189905, 2.159412696114702, 2.1696265743952523, 2.1638375526683693]
+Total Profits Std Error - pure forcasting strategy = [0.06793941257123857, 0.06828662528007491, 0.06860961647117755, 0.06842655153036603]
+Total Profits Confidence - pure forcasting strategy = [array([-2.32408444,  6.21287408]), array([-1.52796788,  7.10428816]), array([-1.64199928,  6.76361532]), array([-0.76117727,  7.46264811])]
+Total Profits Std Dev - mean reversion strategy = [2.326026273604407, 2.28065528413568, 2.330699564241569, 2.3086263194626264]
+Total Profits Std Error - mean reversion strategy = [0.07355540921983918, 0.0721206525556723, 0.07370319164565291, 0.07300517435713412]
+Total Profits Confidence - mean reversion strategy = [array([ 1.98005415, 10.93863291]), array([ 1.23523427, 10.14390002]), array([ 1.47381428, 10.65477795]), array([ 3.59372092, 12.5384858 ])]
+Total Profits Std Dev - hybrid strategy = [1.943458860350759, 1.6967928162142767, 1.5167642486254604, 1.0734841914707174]
+Total Profits Std Error - hybrid strategy = [0.061457565375435036, 0.053657300166485976, 0.04796429699170371, 0.033946550772317646]
+Total Profits Confidence - hybrid strategy = [array([36.32110142, 43.87170011]), array([29.95269771, 36.50964612]), array([19.50295887, 25.37087045]), array([ 6.0614714 , 10.26699743])]
+Total Profits Std Dev - ground truth strategy = [4.38565387167817, 4.501505672519796, 4.6398061105152255, 3.3122646611746545]
+Total Profits Std Error - ground truth strategy = [0.13868655263638838, 0.14235010825330588, 0.14672355210795038, 0.10474300542597796]
+Total Profits Confidence - ground truth strategy = [array([256.54951089, 273.83862736]), array([221.11911808, 238.56488414]), array([147.75469907, 165.23500384]), array([44.42738106, 57.21457056])]
+Total Profits Std Dev - momentum strategy = [2.0647517538432942, 2.046078310872991, 1.987043975371523, 2.0473899895455445]
+Total Profits Std Error - momentum strategy = [0.0652931834497213, 0.06470267733428711, 0.06283584773089534, 0.06474415625592247]
+Total Profits Confidence - momentum strategy = [array([-2.97427187,  4.92608492]), array([-3.68588023,  4.23889779]), array([-3.36819918,  4.35292004]), array([-2.8386414 ,  4.94481595])]
+
+
+_____Profits per Trade Statistics_____
+Profits per Trade Std Dev - pure forcasting strategy = [0.00011477217693143262, 0.00011046364054589876, 0.00011410155104823316, 0.00011310076975333437]
+Profits per Trade Std Error - pure forcasting strategy = [3.62941491119162e-06, 3.4931670275916565e-06, 3.6082078587038966e-06, 3.5765603753881682e-06]
+Profits per Trade Confidence Interval - pure forcasting strategy = [array([-8.33614474e-05,  3.62952371e-04]), array([-7.17013989e-05,  3.47612547e-04]), array([-7.17190915e-05,  3.64666177e-04]), array([-3.68326068e-05,  3.92395715e-04])]
+Profits per Trade Std Dev - mean reversion strategy = [0.00012327461390381546, 0.00012485992038639425, 0.00012415065137941125, 0.00012635537099627155]
+Profits per Trade Std Error - mean reversion strategy = [3.898285576139179e-06, 3.94841736888297e-06, 3.925988313524648e-06, 3.995707669437971e-06]
+Profits per Trade Confidence Interval - mean reversion strategy = [array([0.00010224, 0.0005797 ]), array([6.79139444e-05, 5.61586223e-04]), array([9.30179050e-05, 5.78159805e-04]), array([0.00019694, 0.00067359])]
+Profits per Trade Std Dev - hybrid strategy = [0.00021757361604196447, 0.00031045993381001794, 0.0006018073300708462, 0.0019875952160372645]
+Profits per Trade Std Error - hybrid strategy = [6.880281854515567e-06, 9.817605130647735e-06, 1.9030818756086152e-05, 6.285327949132185e-05]
+Profits per Trade Confidence Interval - hybrid strategy = [array([0.00390176, 0.0047605 ]), array([0.00536667, 0.00656864]), array([0.00734875, 0.00962731]), array([0.01105804, 0.01857141])]
+Profits per Trade Std Dev - ground truth strategy = [0.00024172438245881515, 0.00041357744119314375, 0.0008545321455408634, 0.0030463707515457172]
+Profits per Trade Std Error - ground truth strategy = [7.643996145675085e-06, 1.3078467030346802e-05, 2.7022679137396266e-05, 9.633470172203378e-05]
+Profits per Trade Confidence Interval - ground truth strategy = [array([0.01401521, 0.01495554]), array([0.02014825, 0.02174049]), array([0.02778787, 0.03116475]), array([0.04184382, 0.05366392])]
+Profits per Trade Std Dev - momentum strategy = [0.00011593111045395018, 0.00010453219665026317, 0.00011048526773563909, 0.00010844067188838603]
+Profits per Trade Std Error - momentum strategy = [3.6660636070703954e-06, 3.305598302354551e-06, 3.4938509393813373e-06, 3.4291951416629233e-06]
+Profits per Trade Confidence Interval - momentum strategy = [array([-0.00019039,  0.00026204]), array([-0.00017942,  0.0002138 ]), array([-0.00019114,  0.0002366 ]), array([-0.00015639,  0.00027808])]
+
+
+_____Sharpe Ratios_____
+Sharpe Ratios - pure forcasting strategy = [0.005595169336221094, 0.006485013692377913, 0.006572399643847112, 0.008034168316626374]
+Safest Trade Threshold - pure forcasting strategy = 0.00138659
+Sharpe Ratios - mean reversion strategy = [0.015240275078233188, 0.013884171173583142, 0.014851708179864016, 0.01970980137262625]
+Safest Trade Threshold - mean reversion strategy = 0.00138659
+Sharpe Ratios - hybrid strategy = [0.1380181881116425, 0.13514884330516255, 0.11456286395673201, 0.06057701384158933]
+Safest Trade Threshold - hybrid strategy = 0.0
+Sharpe Ratios - ground truth strategy = [0.8202952127278711, 0.709613041636654, 0.47780834157720564, 0.19346144592612666]
+Safest Trade Threshold - ground truth strategy = 0.0
+Sharpe Ratios - momentum strategy = [0.0021440072553670507, 0.0007516905868015816, 0.0010440043472947607, 0.002094961092046902]
+Safest Trade Threshold - momentum strategy = 0.0
+
+
+_____Number of Trades_____
+pure forcasting strategy: trades made = [19040, 19000, 18952, 18795], trades not made = [0, 40, 88, 245]
+mean reversion strategy: trades made = [19040, 18932, 18778, 18395], trades not made = [0, 108, 262, 645]
+hybrid strategy: trades made = [9223, 5527, 2634, 541], trades not made = [9817, 13513, 16406, 18499]
+ground truth strategy: trades made = [18267, 10970, 5295, 1059], trades not made = [773, 8070, 13745, 17981]
+momentum strategy: trades made = [19040, 19012, 18983, 18847], trades not made = [0, 28, 57, 193]
+
+
+_____Confusion Matrix_____
+pure forcasting strategy v/s ground truth for thresold = 0.0: TP = 28, FP = 15, FN = 9164, TN = 9060
+pure forcasting strategy v/s ground truth for thresold = 0.00034665: TP = 23, FP = 9, FN = 9147, TN = 9048
+pure forcasting strategy v/s ground truth for thresold = 0.0006933: TP = 15, FP = 4, FN = 9124, TN = 9036
+pure forcasting strategy v/s ground truth for thresold = 0.00138659: TP = 10, FP = 2, FN = 9047, TN = 8963
+mean reversion strategy v/s ground truth for thresold = 0.0: TP = 121, FP = 66, FN = 9071, TN = 9009
+mean reversion strategy v/s ground truth for thresold = 0.00034665: TP = 88, FP = 42, FN = 9041, TN = 8990
+mean reversion strategy v/s ground truth for thresold = 0.0006933: TP = 60, FP = 31, FN = 8966, TN = 8952
+mean reversion strategy v/s ground truth for thresold = 0.00138659: TP = 34, FP = 18, FN = 8753, TN = 8825
+hybrid strategy v/s ground truth for thresold = 0.0: TP = 25, FP = 12, FN = 3532, TN = 5256
+hybrid strategy v/s ground truth for thresold = 0.00034665: TP = 21, FP = 7, FN = 1939, TN = 3335
+hybrid strategy v/s ground truth for thresold = 0.0006933: TP = 13, FP = 4, FN = 847, TN = 1667
+hybrid strategy v/s ground truth for thresold = 0.00138659: TP = 5, FP = 2, FN = 151, TN = 377
+
+
+Plot saved to: plot/petr3_4_min/nhits/total_profit_vs_threshold.png
+Plot saved to: plot/petr3_4_min/nhits/sharpe_ratio_vs_threshold.png
+Plot saved to: plot/petr3_4_min/nhits/num_trades_vs_threshold.png
+Plot saved to: plot/petr3_4_min/nhits/profit_per_trade_vs_threshold.png
+Plot saved to: plot/petr3_4_min/nhits/confusion_matrices_pure_forcasting.png
+Plot saved to: plot/petr3_4_min/nhits/confusion_matrices_mean_reversion.png
+Plot saved to: plot/petr3_4_min/nhits/confusion_matrices_hybrid.png
+Plot saved to: plot/petr3_4_min/nhits/confusion_matrices_ground_truth.png
+Plot saved to: plot/petr3_4_min/nhits/accuracy_vs_threshold.png
+Plot saved to: plot/petr3_4_min/nhits/hitrate_summary_best_sharpe.png
+Plot saved to: plot/petr3_4_min/nhits/classification_curves_pure_forcasting.png
+Plot saved to: plot/petr3_4_min/nhits/classification_curves_mean_reversion.png
+Plot saved to: plot/petr3_4_min/nhits/classification_curves_hybrid.png
+Plot saved to: plot/petr3_4_min/nhits/classification_curves_ground_truth.png
+Plot saved to: plot/petr3_4_min/nhits/cumulative_pnl_best_sharpe.png
+Plot saved to: plot/petr3_4_min/nhits/cumulative_pnl_best_profit.png
+Plot saved to: plot/petr3_4_min/nhits/trade_return_distribution.png
+Plot saved to: plot/petr3_4_min/nhits/model_performance_curves.png
+Predictions saved to: plot/petr3_4_min/nhits/predictions.pkl
+Metrics saved to: plot/petr3_4_min/nhits/metrics.csv
+Strategy results saved to: plot/petr3_4_min/nhits/strategies.pkl
+
+python run_trading_strategy.py --sl --sl_model random_forest --data_path dataset/petr3_4_min.csv --n_epochs 3
+2026-04-26 10:47:13.834459: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-04-26 10:47:15.228608: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+============================================================
+PAIR ANALYSIS REPORT -- petr3/petr4
+============================================================
+Pearson Correlation : r = 0.9801  (p = 0.0000e+00)
+
+Engle-Granger Test  : stat = -3.7792  (p = 1.4445e-02)
+  Critical values   : 1% = -3.8966  5% = -3.3362  10% = -3.0445
+  Result            : COINTEGRATED (p < 0.05)
+  Hedge ratio (β)   : 0.992447
+
+ADF on Spread       : stat = -3.7792  (p = 3.1274e-03)  lags = 28
+  Critical values   : 1% = -3.4304  5% = -2.8616  10% = -2.5668
+  Result            : Spread IS stationary (mean-reversion justified)
+
+Mean-Reversion      : half-life = 45058.3 bars (~180233 min)  (λ = -0.000015)
+============================================================
+[Hedge ratio] difference = petr3 - 0.992447 * petr4
+[Half-life] Fallback to ADF lags: INPUT_CHUNK_LENGTH = 28 bars (half-life = 45058.3 exceeds max safe 9532)
+[σ-thresholds] σ = 0.00069330  →  thresholds = [0.0, 0.00034665, 0.0006933, 0.00138659]
+Plot saved to: plot/petr3_4_min/pair_analysis/rolling_correlation.png
+Plot saved to: plot/petr3_4_min/pair_analysis/spread_with_bands.png
+Pair analysis CSV saved to: plot/petr3_4_min/pair_analysis/pair_analysis_results.csv
+DeprecationWarning: `RegressionModel` is deprecated and will be removed in a future version. Use `SKLearnModel` instead.
+Plot saved to: plot/petr3_4_min/random_forest/predictions_vs_true.png
+Plot saved to: plot/petr3_4_min/random_forest/error_distribution.png
+Plot saved to: plot/petr3_4_min/random_forest/correlation_heatmap.png
+Prediction Error: {'RMSE': 0.010691307153535565, 'MASE': 25.882462564731558, 'MAPE': 0.4715553665770507, 'sMAPE': 0.46710396382807623}
+
+
+Plot saved to: plot/petr3_4_min/random_forest/metrics_plot.png
+_____Total Profits_____
+Total Profits - pure forcasting strategy = [46.99474890381999, 30.81052214913966, 11.549525965721438, 2.507040885321588]
+Best Trade Threshold - pure forcasting strategy = 0.0
+Total Profits - mean reversion strategy = [57.68746325668456, 53.98599621818993, 43.71335986922637, 22.280570212613437]
+Best Trade Threshold - mean reversion strategy = 0.0
+Total Profits - hybrid strategy = [62.17595823260538, 36.731758557313874, 15.159329869742932, 3.8829484192668637]
+Best Trade Threshold - hybrid strategy = 0.0
+Total Profits - ground truth strategy = [264.8367465001111, 229.42854041744093, 155.85407021656002, 50.593073707923885]
+Best Trade Threshold - ground truth strategy = 0.0
+Total Profits - momentum strategy = [-37.39440993922744, -28.83190661049785, -12.599287178428836, -0.36522958163047325]
+Best Trade Threshold - momentum strategy = 0.00138659
+
+
+_____Profits per Trade_____
+Profits per Trade - pure forcasting strategy = [0.002468211602091386, 0.002887313480380439, 0.001647343598020459, 0.0004464104140529893]
+Profits per Trade - mean reversion strategy = [0.0030298037424729284, 0.0035749947830070812, 0.00375061002738965, 0.0029432721549027]
+Profits per Trade - hybrid strategy = [0.004985243604282022, 0.007210788880509202, 0.008933017012223295, 0.01522724870300731]
+Profits per Trade - ground truth strategy = [0.014498097470855153, 0.020914178707150496, 0.029434196452608124, 0.04777438499331812]
+Profits per Trade - momentum strategy = [-0.0019639921186569032, -0.0024058667064834655, -0.0016204870969040305, -6.421054529368377e-05]
+
+
+_____Total Profits Statistics_____
+Total Profits Std Dev - pure forcasting strategy = [3.3510957854992522, 2.7202055823586266, 1.8348258229840204, 1.3503039149714469]
+Total Profits Std Error - pure forcasting strategy = [0.10597095339568693, 0.08602045344158002, 0.05802228710322429, 0.04270035904752109]
+Total Profits Confidence - pure forcasting strategy = [array([40.08229582, 53.32254208]), array([25.7865631, 36.4528082]), array([ 8.05135151, 15.1988633 ]), array([-0.1022346 ,  5.23774311])]
+Total Profits Std Dev - mean reversion strategy = [3.467803720096075, 3.2805458477500142, 2.8735160754587965, 2.2525871258523034]
+Total Profits Std Error - mean reversion strategy = [0.10966158233908618, 0.10373996847498007, 0.09086855691558067, 0.07123305945665637]
+Total Profits Confidence - mean reversion strategy = [array([51.20333291, 64.39954852]), array([47.62105388, 60.67611175]), array([38.56226455, 49.66500441]), array([17.57501155, 26.54543374])]
+Total Profits Std Dev - hybrid strategy = [2.625347692867225, 2.0535929950066185, 1.3991694776588735, 0.801905350335735]
+Total Profits Std Error - hybrid strategy = [0.08302078359328621, 0.06494031251187704, 0.04424562381990116, 0.025358473749361926]
+Total Profits Confidence - hybrid strategy = [array([56.9899865 , 67.58910908]), array([32.61896279, 40.58241453]), array([12.57743542, 17.9082888 ]), array([2.3627386 , 5.48428084])]
+Total Profits Std Dev - ground truth strategy = [4.239517942175073, 4.347416798541305, 4.56720687700049, 3.3076098419789006]
+Total Profits Std Error - ground truth strategy = [0.13406532878423252, 0.13747739021467906, 0.1444277627650604, 0.1045958071184294]
+Total Profits Confidence - ground truth strategy = [array([256.84910532, 272.71431274]), array([221.22168627, 238.59705149]), array([147.29614546, 165.08991993]), array([44.58734354, 57.27137128])]
+Total Profits Std Dev - momentum strategy = [2.9409395319782625, 2.5385745956199948, 1.912057882658879, 1.3569771706799187]
+Total Profits Std Error - momentum strategy = [0.09300067381880908, 0.08027677732400088, 0.06046457927281026, 0.04291138592199601]
+Total Profits Confidence - momentum strategy = [array([-43.14399271, -31.95462309]), array([-33.82340034, -23.48603929]), array([-16.66016833,  -9.33528316]), array([-2.78138373,  2.35739767])]
+
+
+_____Profits per Trade Statistics_____
+Profits per Trade Std Dev - pure forcasting strategy = [0.0001762329407583109, 0.0002450371529697201, 0.0002456878554932166, 0.00022090278060575262]
+Profits per Trade Std Error - pure forcasting strategy = [5.57297491545784e-06, 7.748755147474077e-06, 7.76933216800876e-06, 6.9855592817864825e-06]
+Profits per Trade Confidence Interval - pure forcasting strategy = [array([0.00212543, 0.00283254]), array([0.00241043, 0.00339497]), array([0.00119025, 0.00216245]), array([3.74342634e-05, 8.92898071e-04])]
+Profits per Trade Std Dev - mean reversion strategy = [0.00018540221424829089, 0.0002134269884725746, 0.0002433195032028473, 0.00028210752598966375]
+Profits per Trade Std Error - mean reversion strategy = [5.862932802631219e-06, 6.749153977238369e-06, 7.694438292616325e-06, 8.921023272024842e-06]
+Profits per Trade Confidence Interval - mean reversion strategy = [array([0.00269865, 0.00339283]), array([0.00313913, 0.00397123]), array([0.00328638, 0.00423635]), array([0.00243155, 0.00351706])]
+Profits per Trade Std Dev - hybrid strategy = [0.00021125807069854723, 0.0004238217718897536, 0.000840891862700863, 0.0031943964029288595]
+Profits per Trade Std Error - hybrid strategy = [6.68056677500288e-06, 1.3402421211399467e-05, 2.659133552036315e-05, 0.00010101568382704162]
+Profits per Trade Confidence Interval - hybrid strategy = [array([0.00456525, 0.00537119]), array([0.00643377, 0.00805026]), array([0.00737568, 0.01063397]), array([0.00981789, 0.02175141])]
+Profits per Trade Std Dev - ground truth strategy = [0.0002477749114589127, 0.00041441007021361724, 0.0008880705649941305, 0.0032105698965855414]
+Profits per Trade Std Error - ground truth strategy = [7.835330672567179e-06, 1.3104797071853314e-05, 2.80832570833405e-05, 0.00010152713460381562]
+Profits per Trade Confidence Interval - ground truth strategy = [array([0.01402769, 0.01497728]), array([0.02008891, 0.02170581]), array([0.02777996, 0.03127911]), array([0.04178531, 0.05390963])]
+Profits per Trade Std Dev - momentum strategy = [0.00016088493845042932, 0.00021589799327191678, 0.00023724877530248084, 0.0002377037098515845]
+Profits per Trade Std Error - momentum strategy = [5.0876284671935735e-06, 6.827294009989655e-06, 7.502465020413427e-06, 7.51685131402812e-06]
+Profits per Trade Confidence Interval - momentum strategy = [array([-0.00230138, -0.00165019]), array([-0.00282631, -0.00198795]), array([-0.00209223, -0.00116131]), array([-0.00051262,  0.00043548])]
+
+
+_____Sharpe Ratios_____
+Sharpe Ratios - pure forcasting strategy = [0.11325988838460789, 0.09289169916719572, 0.0445348725965606, 0.011446924667106551]
+Safest Trade Threshold - pure forcasting strategy = 0.0
+Sharpe Ratios - mean reversion strategy = [0.1394840768857345, 0.14206911274914144, 0.12642330696269655, 0.07860291700302263]
+Safest Trade Threshold - mean reversion strategy = 0.00034665
+Sharpe Ratios - hybrid strategy = [0.17738661222985913, 0.1384138216915008, 0.086936461942426, 0.03629462032051298]
+Safest Trade Threshold - hybrid strategy = 0.0
+Sharpe Ratios - ground truth strategy = [0.8202952127278711, 0.709613041636654, 0.47780834157720564, 0.19346144592612666]
+Safest Trade Threshold - ground truth strategy = 0.0
+Sharpe Ratios - momentum strategy = [-0.08991125121943183, -0.08561456415313776, -0.04569102346322154, -0.0015750442211994464]
+Safest Trade Threshold - momentum strategy = 0.00138659
+
+
+_____Number of Trades_____
+pure forcasting strategy: trades made = [19040, 10671, 7011, 5616], trades not made = [0, 8369, 12029, 13424]
+mean reversion strategy: trades made = [19040, 15101, 11655, 7570], trades not made = [0, 3939, 7385, 11470]
+hybrid strategy: trades made = [12472, 5094, 1697, 255], trades not made = [6568, 13946, 17343, 18785]
+ground truth strategy: trades made = [18267, 10970, 5295, 1059], trades not made = [773, 8070, 13745, 17981]
+momentum strategy: trades made = [19040, 11984, 7775, 5688], trades not made = [0, 7056, 11265, 13352]
+
+
+_____Confusion Matrix_____
+pure forcasting strategy v/s ground truth for thresold = 0.0: TP = 3440, FP = 2405, FN = 5752, TN = 6670
+pure forcasting strategy v/s ground truth for thresold = 0.00034665: TP = 1273, FP = 740, FN = 3798, TN = 4428
+pure forcasting strategy v/s ground truth for thresold = 0.0006933: TP = 340, FP = 202, FN = 2983, TN = 3193
+pure forcasting strategy v/s ground truth for thresold = 0.00138659: TP = 19, FP = 14, FN = 2671, TN = 2672
+mean reversion strategy v/s ground truth for thresold = 0.0: TP = 3748, FP = 2445, FN = 5444, TN = 6630
+mean reversion strategy v/s ground truth for thresold = 0.00034665: TP = 2732, FP = 1586, FN = 4513, TN = 5661
+mean reversion strategy v/s ground truth for thresold = 0.0006933: TP = 1821, FP = 941, FN = 3765, TN = 4669
+mean reversion strategy v/s ground truth for thresold = 0.00138659: TP = 647, FP = 298, FN = 2975, TN = 3348
+hybrid strategy v/s ground truth for thresold = 0.0: TP = 2748, FP = 1657, FN = 2959, TN = 4613
+hybrid strategy v/s ground truth for thresold = 0.00034665: TP = 955, FP = 470, FN = 1243, TN = 2235
+hybrid strategy v/s ground truth for thresold = 0.0006933: TP = 224, FP = 113, FN = 432, TN = 870
+hybrid strategy v/s ground truth for thresold = 0.00138659: TP = 13, FP = 12, FN = 72, TN = 156
+
+
+Plot saved to: plot/petr3_4_min/random_forest/total_profit_vs_threshold.png
+Plot saved to: plot/petr3_4_min/random_forest/sharpe_ratio_vs_threshold.png
+Plot saved to: plot/petr3_4_min/random_forest/num_trades_vs_threshold.png
+Plot saved to: plot/petr3_4_min/random_forest/profit_per_trade_vs_threshold.png
+Plot saved to: plot/petr3_4_min/random_forest/confusion_matrices_pure_forcasting.png
+Plot saved to: plot/petr3_4_min/random_forest/confusion_matrices_mean_reversion.png
+Plot saved to: plot/petr3_4_min/random_forest/confusion_matrices_hybrid.png
+Plot saved to: plot/petr3_4_min/random_forest/confusion_matrices_ground_truth.png
+Plot saved to: plot/petr3_4_min/random_forest/accuracy_vs_threshold.png
+Plot saved to: plot/petr3_4_min/random_forest/hitrate_summary_best_sharpe.png
+Plot saved to: plot/petr3_4_min/random_forest/classification_curves_pure_forcasting.png
+Plot saved to: plot/petr3_4_min/random_forest/classification_curves_mean_reversion.png
+Plot saved to: plot/petr3_4_min/random_forest/classification_curves_hybrid.png
+Plot saved to: plot/petr3_4_min/random_forest/classification_curves_ground_truth.png
+Plot saved to: plot/petr3_4_min/random_forest/cumulative_pnl_best_sharpe.png
+Plot saved to: plot/petr3_4_min/random_forest/cumulative_pnl_best_profit.png
+Plot saved to: plot/petr3_4_min/random_forest/trade_return_distribution.png
+Plot saved to: plot/petr3_4_min/random_forest/model_performance_curves.png
+Predictions saved to: plot/petr3_4_min/random_forest/predictions.pkl
+Metrics saved to: plot/petr3_4_min/random_forest/metrics.csv
+Strategy results saved to: plot/petr3_4_min/random_forest/strategies.pkl
+
+python run_trading_strategy.py --sl --sl_model tcn --data_path dataset/petr3_4_min.csv --n_epochs 3
+2026-04-26 10:54:00.172686: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-04-26 10:54:01.461508: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+============================================================
+PAIR ANALYSIS REPORT -- petr3/petr4
+============================================================
+Pearson Correlation : r = 0.9801  (p = 0.0000e+00)
+
+Engle-Granger Test  : stat = -3.7792  (p = 1.4445e-02)
+  Critical values   : 1% = -3.8966  5% = -3.3362  10% = -3.0445
+  Result            : COINTEGRATED (p < 0.05)
+  Hedge ratio (β)   : 0.992447
+
+ADF on Spread       : stat = -3.7792  (p = 3.1274e-03)  lags = 28
+  Critical values   : 1% = -3.4304  5% = -2.8616  10% = -2.5668
+  Result            : Spread IS stationary (mean-reversion justified)
+
+Mean-Reversion      : half-life = 45058.3 bars (~180233 min)  (λ = -0.000015)
+============================================================
+[Hedge ratio] difference = petr3 - 0.992447 * petr4
+[Half-life] Fallback to ADF lags: INPUT_CHUNK_LENGTH = 28 bars (half-life = 45058.3 exceeds max safe 9532)
+[σ-thresholds] σ = 0.00069330  →  thresholds = [0.0, 0.00034665, 0.0006933, 0.00138659]
+Plot saved to: plot/petr3_4_min/pair_analysis/rolling_correlation.png
+Plot saved to: plot/petr3_4_min/pair_analysis/spread_with_bands.png
+Pair analysis CSV saved to: plot/petr3_4_min/pair_analysis/pair_analysis_results.csv
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+`Trainer.fit` stopped: `max_epochs=3` reached.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+Plot saved to: plot/petr3_4_min/tcn/predictions_vs_true.png
+Plot saved to: plot/petr3_4_min/tcn/error_distribution.png
+Plot saved to: plot/petr3_4_min/tcn/correlation_heatmap.png
+Prediction Error: {'RMSE': 0.0022963639038922233, 'MASE': 5.518411314706954, 'MAPE': 0.12402343336544201, 'sMAPE': 0.12383653977402534}
+
+
+Plot saved to: plot/petr3_4_min/tcn/metrics_plot.png
+_____Total Profits_____
+Total Profits - pure forcasting strategy = [46.81199763244893, 35.977094602563135, 17.506153983817473, 5.242563288815998]
+Best Trade Threshold - pure forcasting strategy = 0.0
+Total Profits - mean reversion strategy = [65.374126002423, 60.79698724992445, 49.621194270934915, 27.12322987570951]
+Best Trade Threshold - mean reversion strategy = 0.0
+Total Profits - hybrid strategy = [61.81535107012871, 36.75408771551793, 16.413988770721083, 4.498129780701609]
+Best Trade Threshold - hybrid strategy = 0.0
+Total Profits - ground truth strategy = [264.8367465001111, 229.42854041744093, 155.85407021656002, 50.593073707923885]
+Best Trade Threshold - ground truth strategy = 0.0
+Total Profits - momentum strategy = [-27.393390972643058, -22.413231486381793, -13.720102504050518, -3.8540247112623445]
+Best Trade Threshold - momentum strategy = 0.00138659
+
+
+_____Profits per Trade_____
+Profits per Trade - pure forcasting strategy = [0.0024586133210319815, 0.003174823032347612, 0.0024341148475830747, 0.0011791640325721994]
+Profits per Trade - mean reversion strategy = [0.0034335150211356616, 0.004115412390843055, 0.004482087821419466, 0.004209067330184592]
+Profits per Trade - hybrid strategy = [0.005345036841342733, 0.00728669463035645, 0.008886837450309194, 0.01623873567040292]
+Profits per Trade - ground truth strategy = [0.014498097470855153, 0.020914178707150496, 0.029434196452608124, 0.04777438499331812]
+Profits per Trade - momentum strategy = [-0.0014387285174707488, -0.001793201975068549, -0.0017141557351387454, -0.000822455124042327]
+
+
+_____Total Profits Statistics_____
+Total Profits Std Dev - pure forcasting strategy = [3.3706642977708867, 2.5365560334016592, 1.8892006736618572, 1.381363099343495]
+Total Profits Std Error - pure forcasting strategy = [0.10658976408768013, 0.08021294478191385, 0.05974177085895944, 0.04368253669634888]
+Total Profits Confidence - pure forcasting strategy = [array([40.02566446, 53.0120894 ]), array([31.42507063, 40.95031621]), array([13.91120833, 21.41967966]), array([2.6108835 , 7.84756815])]
+Total Profits Std Dev - mean reversion strategy = [3.440348889105807, 3.0876848371143564, 2.8887233349591055, 2.270499143153714]
+Total Profits Std Error - mean reversion strategy = [0.10879338435204394, 0.0976411678204737, 0.09134945268548278, 0.07179948717826437]
+Total Profits Confidence - mean reversion strategy = [array([58.7819917 , 72.13327069]), array([54.65407016, 67.38059689]), array([43.84955023, 55.18950874]), array([22.69692528, 31.66847404])]
+Total Profits Std Dev - hybrid strategy = [2.625230903617702, 1.9773897534363511, 1.5019166688451806, 0.8301856860737622]
+Total Profits Std Error - hybrid strategy = [0.08301709039293907, 0.06253055442737633, 0.047494775293236244, 0.026252776488626176]
+Total Profits Confidence - hybrid strategy = [array([56.94679181, 67.46083087]), array([32.86031721, 40.66333709]), array([13.45215486, 19.42240357]), array([3.03023247, 6.24131737])]
+Total Profits Std Dev - ground truth strategy = [4.346835699280005, 4.454890218272072, 4.5480867043225155, 3.2307352200901804]
+Total Profits Std Error - ground truth strategy = [0.13745901424255555, 0.1408759981574441, 0.1438231298158792, 0.1021648181241035]
+Total Profits Confidence - ground truth strategy = [array([256.42542315, 273.29987405]), array([221.27447647, 238.50989664]), array([147.00091707, 165.14135643]), array([44.47376659, 56.73337574])]
+Total Profits Std Dev - momentum strategy = [2.962078880975966, 2.331222758380677, 1.8290723528215536, 1.2942754804870147]
+Total Profits Std Error - momentum strategy = [0.0936691587296685, 0.07371973649703321, 0.05784034640159215, 0.04092858438047782]
+Total Profits Confidence - momentum strategy = [array([-33.11967651, -21.59507111]), array([-26.88134345, -17.57289888]), array([-17.37579296, -10.29164017]), array([-6.39544764, -1.30930259])]
+
+
+_____Profits per Trade Statistics_____
+Profits per Trade Std Dev - pure forcasting strategy = [0.00017773663934330443, 0.00021799264749645781, 0.00025437815682325906, 0.00030360716953039673]
+Profits per Trade Std Error - pure forcasting strategy = [5.620526039887358e-06, 6.893532792590089e-06, 8.044143625570007e-06, 9.600901696729274e-06]
+Profits per Trade Confidence Interval - pure forcasting strategy = [array([0.00209722, 0.0028133 ]), array([0.00276019, 0.00360113]), array([0.00192907, 0.00293097]), array([0.00063687, 0.00183454])]
+Profits per Trade Std Dev - mean reversion strategy = [0.0001862691516584983, 0.0002164847905861116, 0.0002565637340242356, 0.00035842267399582395]
+Profits per Trade Std Error - mean reversion strategy = [5.89034777068185e-06, 6.845850170366906e-06, 8.113257645142222e-06, 1.133432014874808e-05]
+Profits per Trade Confidence Interval - mean reversion strategy = [array([0.00306877, 0.00379379]), array([0.00368214, 0.00454252]), array([0.00400585, 0.00496211]), array([0.00354071, 0.00496178])]
+Profits per Trade Std Dev - hybrid strategy = [0.00023899194970717955, 0.00039149095318484554, 0.0007871074982776327, 0.0031373511842497284]
+Profits per Trade Std Error - hybrid strategy = [7.557589035190988e-06, 1.238003095414462e-05, 2.4890524579543792e-05, 9.921175562055725e-05]
+Profits per Trade Confidence Interval - hybrid strategy = [array([0.00485348, 0.00579158]), array([0.00654041, 0.00807155]), array([0.00730527, 0.01035575]), array([0.01061995, 0.02287643])]
+Profits per Trade Std Dev - ground truth strategy = [0.0002484255466836677, 0.0004280037536864531, 0.0008657184265684564, 0.0032087049704170164]
+Profits per Trade Std Error - ground truth strategy = [7.855905564928793e-06, 1.3534667087508802e-05, 2.7376420403335493e-05, 0.00010146816046020972]
+Profits per Trade Confidence Interval - ground truth strategy = [array([0.01404602, 0.01497896]), array([0.02009616, 0.02176872]), array([0.02791961, 0.03111191]), array([0.0419939 , 0.05428555])]
+Profits per Trade Std Dev - momentum strategy = [0.00015921273015234233, 0.00019124497725943505, 0.00023416337104839455, 0.0002656793269714454]
+Profits per Trade Std Error - momentum strategy = [5.034748597751687e-06, 6.0476971920692124e-06, 7.404895970960571e-06, 8.401518004503722e-06]
+Profits per Trade Confidence Interval - momentum strategy = [array([-0.00175958, -0.00112696]), array([-0.00216287, -0.0014426 ]), array([-0.00217961, -0.00124706]), array([-0.00136523, -0.00033237])]
+
+
+_____Sharpe Ratios_____
+Sharpe Ratios - pure forcasting strategy = [0.1128138313796292, 0.10495580486127845, 0.0634783336733834, 0.0256368825796509]
+Safest Trade Threshold - pure forcasting strategy = 0.0
+Sharpe Ratios - mean reversion strategy = [0.15850877274484548, 0.16212616000924854, 0.1450415052529099, 0.09991772976677367]
+Safest Trade Threshold - mean reversion strategy = 0.00034665
+Sharpe Ratios - hybrid strategy = [0.18272992014096864, 0.13876974611997778, 0.08782347297438389, 0.04044875931533147]
+Safest Trade Threshold - hybrid strategy = 0.0
+Sharpe Ratios - ground truth strategy = [0.8202952127278711, 0.709613041636654, 0.47780834157720564, 0.19346144592612666]
+Safest Trade Threshold - ground truth strategy = 0.0
+Sharpe Ratios - momentum strategy = [-0.06574175112951976, -0.06544455366147395, -0.04814762609318735, -0.018246950977767944]
+Safest Trade Threshold - momentum strategy = 0.00138659
+
+
+_____Number of Trades_____
+pure forcasting strategy: trades made = [19040, 11332, 7192, 4446], trades not made = [0, 7708, 11848, 14594]
+mean reversion strategy: trades made = [19040, 14773, 11071, 6444], trades not made = [0, 4267, 7969, 12596]
+hybrid strategy: trades made = [11565, 5044, 1847, 277], trades not made = [7475, 13996, 17193, 18763]
+ground truth strategy: trades made = [18267, 10970, 5295, 1059], trades not made = [773, 8070, 13745, 17981]
+momentum strategy: trades made = [19040, 12499, 8004, 4686], trades not made = [0, 6541, 11036, 14354]
+
+
+_____Confusion Matrix_____
+pure forcasting strategy v/s ground truth for thresold = 0.0: TP = 2951, FP = 1988, FN = 6241, TN = 7087
+pure forcasting strategy v/s ground truth for thresold = 0.00034665: TP = 1164, FP = 695, FN = 4093, TN = 4938
+pure forcasting strategy v/s ground truth for thresold = 0.0006933: TP = 377, FP = 247, FN = 2941, TN = 3338
+pure forcasting strategy v/s ground truth for thresold = 0.00138659: TP = 41, FP = 22, FN = 2041, TN = 2159
+mean reversion strategy v/s ground truth for thresold = 0.0: TP = 3727, FP = 2262, FN = 5465, TN = 6813
+mean reversion strategy v/s ground truth for thresold = 0.00034665: TP = 2620, FP = 1419, FN = 4411, TN = 5722
+mean reversion strategy v/s ground truth for thresold = 0.0006933: TP = 1669, FP = 835, FN = 3482, TN = 4637
+mean reversion strategy v/s ground truth for thresold = 0.00138659: TP = 586, FP = 298, FN = 2338, TN = 2968
+hybrid strategy v/s ground truth for thresold = 0.0: TP = 2291, FP = 1247, FN = 2964, TN = 4581
+hybrid strategy v/s ground truth for thresold = 0.00034665: TP = 784, FP = 384, FN = 1318, TN = 2364
+hybrid strategy v/s ground truth for thresold = 0.0006933: TP = 222, FP = 127, FN = 476, TN = 955
+hybrid strategy v/s ground truth for thresold = 0.00138659: TP = 26, FP = 12, FN = 72, TN = 164
+
+
+Plot saved to: plot/petr3_4_min/tcn/total_profit_vs_threshold.png
+Plot saved to: plot/petr3_4_min/tcn/sharpe_ratio_vs_threshold.png
+Plot saved to: plot/petr3_4_min/tcn/num_trades_vs_threshold.png
+Plot saved to: plot/petr3_4_min/tcn/profit_per_trade_vs_threshold.png
+Plot saved to: plot/petr3_4_min/tcn/confusion_matrices_pure_forcasting.png
+Plot saved to: plot/petr3_4_min/tcn/confusion_matrices_mean_reversion.png
+Plot saved to: plot/petr3_4_min/tcn/confusion_matrices_hybrid.png
+Plot saved to: plot/petr3_4_min/tcn/confusion_matrices_ground_truth.png
+Plot saved to: plot/petr3_4_min/tcn/accuracy_vs_threshold.png
+Plot saved to: plot/petr3_4_min/tcn/hitrate_summary_best_sharpe.png
+Plot saved to: plot/petr3_4_min/tcn/classification_curves_pure_forcasting.png
+Plot saved to: plot/petr3_4_min/tcn/classification_curves_mean_reversion.png
+Plot saved to: plot/petr3_4_min/tcn/classification_curves_hybrid.png
+Plot saved to: plot/petr3_4_min/tcn/classification_curves_ground_truth.png
+Plot saved to: plot/petr3_4_min/tcn/cumulative_pnl_best_sharpe.png
+Plot saved to: plot/petr3_4_min/tcn/cumulative_pnl_best_profit.png
+Plot saved to: plot/petr3_4_min/tcn/trade_return_distribution.png
+Plot saved to: plot/petr3_4_min/tcn/model_performance_curves.png
+Predictions saved to: plot/petr3_4_min/tcn/predictions.pkl
+Metrics saved to: plot/petr3_4_min/tcn/metrics.csv
+Strategy results saved to: plot/petr3_4_min/tcn/strategies.pkl
+
+python run_trading_strategy.py --sl --sl_model tft --data_path dataset/petr3_4_min.csv --n_epochs 3
+2026-04-26 10:59:55.970806: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-04-26 10:59:57.457643: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+============================================================
+PAIR ANALYSIS REPORT -- petr3/petr4
+============================================================
+Pearson Correlation : r = 0.9801  (p = 0.0000e+00)
+
+Engle-Granger Test  : stat = -3.7792  (p = 1.4445e-02)
+  Critical values   : 1% = -3.8966  5% = -3.3362  10% = -3.0445
+  Result            : COINTEGRATED (p < 0.05)
+  Hedge ratio (β)   : 0.992447
+
+ADF on Spread       : stat = -3.7792  (p = 3.1274e-03)  lags = 28
+  Critical values   : 1% = -3.4304  5% = -2.8616  10% = -2.5668
+  Result            : Spread IS stationary (mean-reversion justified)
+
+Mean-Reversion      : half-life = 45058.3 bars (~180233 min)  (λ = -0.000015)
+============================================================
+[Hedge ratio] difference = petr3 - 0.992447 * petr4
+[Half-life] Fallback to ADF lags: INPUT_CHUNK_LENGTH = 28 bars (half-life = 45058.3 exceeds max safe 9532)
+[σ-thresholds] σ = 0.00069330  →  thresholds = [0.0, 0.00034665, 0.0006933, 0.00138659]
+Plot saved to: plot/petr3_4_min/pair_analysis/rolling_correlation.png
+Plot saved to: plot/petr3_4_min/pair_analysis/spread_with_bands.png
+Pair analysis CSV saved to: plot/petr3_4_min/pair_analysis/pair_analysis_results.csv
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+`Trainer.fit` stopped: `max_epochs=3` reached.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+Plot saved to: plot/petr3_4_min/tft/predictions_vs_true.png
+Plot saved to: plot/petr3_4_min/tft/error_distribution.png
+Plot saved to: plot/petr3_4_min/tft/correlation_heatmap.png
+Prediction Error: {'RMSE': 0.012381636556690731, 'MASE': 1.8124518415065802, 'MAPE': 0.6996598986991516, 'sMAPE': 0.694077903797542}
+
+
+Plot saved to: plot/petr3_4_min/tft/metrics_plot.png
+_____Total Profits_____
+Total Profits - pure forcasting strategy = [12.160803097326736, 12.711356323856789, 12.818499057318837, 11.840359328542645]
+Best Trade Threshold - pure forcasting strategy = 0.0006933
+Total Profits - mean reversion strategy = [24.82908457243911, 23.50293611507838, 22.49426053605298, 19.908514519027886]
+Best Trade Threshold - mean reversion strategy = 0.0
+Total Profits - hybrid strategy = [44.69480922084074, 35.07773013963311, 21.790078794453656, 6.676940625009807]
+Best Trade Threshold - hybrid strategy = 0.0
+Total Profits - ground truth strategy = [264.8367465001111, 229.42854041744093, 155.85407021656002, 50.593073707923885]
+Best Trade Threshold - ground truth strategy = 0.0
+Total Profits - momentum strategy = [1.7300502608644412, 2.8206788748255973, 1.9060069019531622, 2.3130069448652786]
+Best Trade Threshold - momentum strategy = 0.00034665
+
+
+_____Profits per Trade_____
+Profits per Trade - pure forcasting strategy = [0.0006386976416663201, 0.0007092203494870719, 0.0007588053665612287, 0.0008009442825233474]
+Profits per Trade - mean reversion strategy = [0.0013040485594768441, 0.0013069530175765101, 0.0013245163125509616, 0.001332297029982459]
+Profits per Trade - hybrid strategy = [0.00463062673237057, 0.006211746084581744, 0.008219569518843325, 0.012889846766428199]
+Profits per Trade - ground truth strategy = [0.014498097470855153, 0.020914178707150496, 0.029434196452608124, 0.04777438499331812]
+Profits per Trade - momentum strategy = [9.086398428909881e-05, 0.00015709712474662197, 0.00011280149742280655, 0.0001560733431083184]
+
+
+_____Total Profits Statistics_____
+Total Profits Std Dev - pure forcasting strategy = [3.1234549216779084, 2.9739882818013075, 2.8151824831048207, 2.5987087697523235]
+Total Profits Std Error - pure forcasting strategy = [0.09877231721365025, 0.09404576705142817, 0.08902388675619721, 0.08217838687871425]
+Total Profits Confidence - pure forcasting strategy = [array([ 6.10113811, 18.18808167]), array([ 7.0630296 , 18.54558521]), array([ 7.35249887, 18.16472159]), array([ 7.02572435, 16.85435575])]
+Total Profits Std Dev - mean reversion strategy = [3.1289413959353163, 3.0489593085823405, 2.805686599257477, 2.68619767462387]
+Total Profits Std Error - mean reversion strategy = [0.09894581476342315, 0.09641655908292364, 0.08872360054265713, 0.08494502897259314]
+Total Profits Confidence - mean reversion strategy = [array([19.04768179, 31.60503574]), array([17.79442745, 29.36909975]), array([16.93164361, 27.90489922]), array([14.66820145, 25.38496588])]
+Total Profits Std Dev - hybrid strategy = [2.3897890813531273, 1.9483096242089557, 1.7071194199983581, 1.1132108748057659]
+Total Profits Std Error - hybrid strategy = [0.07557176624477309, 0.06161095999727031, 0.05398385605100409, 0.03520281880454772]
+Total Profits Confidence - hybrid strategy = [array([40.27277667, 49.32317576]), array([31.19499946, 38.90314526]), array([18.65853568, 25.27292815]), array([4.61736973, 8.83264809])]
+Total Profits Std Dev - ground truth strategy = [4.372664149984737, 4.451559570819109, 4.5246455181240695, 3.2649509477626415]
+Total Profits Std Error - ground truth strategy = [0.1382757815691589, 0.14077067383710007, 0.14308185442144727, 0.10324681443655379]
+Total Profits Confidence - ground truth strategy = [array([256.19697258, 273.00822245]), array([221.12730919, 237.90874637]), array([147.6254488 , 165.41603431]), array([44.5597893 , 57.54500328])]
+Total Profits Std Dev - momentum strategy = [2.908185541315331, 2.935710739597028, 2.761246730831456, 2.5126438390700887]
+Total Profits Std Error - momentum strategy = [0.09196490168926157, 0.09283532488544072, 0.08731828851121284, 0.07945677480251054]
+Total Profits Confidence - momentum strategy = [array([-3.97341201,  7.18689628]), array([-2.81733771,  8.25382292]), array([-3.61965774,  6.94106387]), array([-2.66634958,  7.05331775])]
+
+
+_____Profits per Trade Statistics_____
+Profits per Trade Std Dev - pure forcasting strategy = [0.00016316898196872592, 0.00016045839731722967, 0.00016454595681839005, 0.00017377760909300462]
+Profits per Trade Std Error - pure forcasting strategy = [5.1598562651211905e-06, 5.074140052226972e-06, 5.203400033178257e-06, 5.4953305107228194e-06]
+Profits per Trade Confidence Interval - pure forcasting strategy = [array([0.00032114, 0.00095717]), array([0.00041132, 0.00104696]), array([0.00045128, 0.00106879]), array([0.00046614, 0.00115422])]
+Profits per Trade Std Dev - mean reversion strategy = [0.00015681902396111116, 0.0001663141975508923, 0.0001731455014702926, 0.00018663315668187842]
+Profits per Trade Std Error - mean reversion strategy = [4.959052961616316e-06, 5.259316714840173e-06, 5.475341512581576e-06, 5.90185862021809e-06]
+Profits per Trade Confidence Interval - mean reversion strategy = [array([0.00099646, 0.00160146]), array([0.00099783, 0.00166066]), array([0.00097074, 0.00165302]), array([0.00097387, 0.00171261])]
+Profits per Trade Std Dev - hybrid strategy = [0.0002371126451925239, 0.0003475889685174202, 0.0006432678801785808, 0.002144282196287267]
+Profits per Trade Std Error - hybrid strategy = [7.498160208357496e-06, 1.0991728300636081e-05, 2.034191646992596e-05, 6.780815686416013e-05]
+Profits per Trade Confidence Interval - hybrid strategy = [array([0.00416123, 0.00508335]), array([0.00554766, 0.00689728]), array([0.00699464, 0.00958668]), array([0.00888618, 0.01719961])]
+Profits per Trade Std Dev - ground truth strategy = [0.0002319071995436488, 0.00040537784596264613, 0.0008409894579362513, 0.003158520781480265]
+Profits per Trade Std Error - ground truth strategy = [7.333549563490912e-06, 1.2819173062148544e-05, 2.6594421752689226e-05, 9.988119706452614e-05]
+Profits per Trade Confidence Interval - ground truth strategy = [array([0.01403971, 0.01492255]), array([0.02007838, 0.02165986]), array([0.02779737, 0.03111214]), array([0.04158868, 0.05422524])]
+Profits per Trade Std Dev - momentum strategy = [0.0001515259630465287, 0.0001612853445775315, 0.00016351196773492158, 0.00017005511323070458]
+Profits per Trade Std Error - momentum strategy = [4.791671678775372e-06, 5.100290420700871e-06, 5.1707024273831536e-06, 5.377614855668613e-06]
+Profits per Trade Confidence Interval - momentum strategy = [array([-0.00019793,  0.00039471]), array([-0.00015793,  0.00045409]), array([-0.00020657,  0.00043104]), array([-0.00015782,  0.00049874])]
+
+
+_____Sharpe Ratios_____
+Sharpe Ratios - pure forcasting strategy = [0.029134360117995483, 0.031244617803481648, 0.032310822281346, 0.031624182933097815]
+Safest Trade Threshold - pure forcasting strategy = 0.0006933
+Sharpe Ratios - mean reversion strategy = [0.05956467281307021, 0.05759523205818805, 0.056384154322864526, 0.05260384435035257]
+Safest Trade Threshold - mean reversion strategy = 0.0
+Sharpe Ratios - hybrid strategy = [0.14273232795088617, 0.1312812217120484, 0.09889662000315047, 0.04733427062061698]
+Safest Trade Threshold - hybrid strategy = 0.0
+Sharpe Ratios - ground truth strategy = [0.8202952127278711, 0.709613041636654, 0.47780834157720564, 0.19346144592612666]
+Safest Trade Threshold - ground truth strategy = 0.0
+Sharpe Ratios - momentum strategy = [0.004143062036185824, 0.006927322774403795, 0.004876533492180558, 0.006306125778648415]
+Safest Trade Threshold - momentum strategy = 0.00034665
+
+
+_____Number of Trades_____
+pure forcasting strategy: trades made = [19040, 17923, 16893, 14783], trades not made = [0, 1117, 2147, 4257]
+mean reversion strategy: trades made = [19040, 17983, 16983, 14943], trades not made = [0, 1057, 2057, 4097]
+hybrid strategy: trades made = [9652, 5647, 2651, 518], trades not made = [9388, 13393, 16389, 18522]
+ground truth strategy: trades made = [18267, 10970, 5295, 1059], trades not made = [773, 8070, 13745, 17981]
+momentum strategy: trades made = [19040, 17955, 16897, 14820], trades not made = [0, 1085, 2143, 4220]
+
+
+_____Confusion Matrix_____
+pure forcasting strategy v/s ground truth for thresold = 0.0: TP = 3890, FP = 3560, FN = 5302, TN = 5515
+pure forcasting strategy v/s ground truth for thresold = 0.00034665: TP = 3631, FP = 3281, FN = 5038, TN = 5251
+pure forcasting strategy v/s ground truth for thresold = 0.0006933: TP = 3367, FP = 3000, FN = 4824, TN = 5021
+pure forcasting strategy v/s ground truth for thresold = 0.00138659: TP = 2833, FP = 2427, FN = 4409, TN = 4530
+mean reversion strategy v/s ground truth for thresold = 0.0: TP = 3977, FP = 3390, FN = 5215, TN = 5685
+mean reversion strategy v/s ground truth for thresold = 0.00034665: TP = 3722, FP = 3136, FN = 4991, TN = 5409
+mean reversion strategy v/s ground truth for thresold = 0.0006933: TP = 3467, FP = 2872, FN = 4801, TN = 5166
+mean reversion strategy v/s ground truth for thresold = 0.00138659: TP = 2911, FP = 2356, FN = 4406, TN = 4676
+hybrid strategy v/s ground truth for thresold = 0.0: TP = 2355, FP = 1470, FN = 2149, TN = 3308
+hybrid strategy v/s ground truth for thresold = 0.00034665: TP = 1404, FP = 763, FN = 1203, TN = 2084
+hybrid strategy v/s ground truth for thresold = 0.0006933: TP = 694, FP = 329, FN = 519, TN = 1023
+hybrid strategy v/s ground truth for thresold = 0.00138659: TP = 129, FP = 66, FN = 86, TN = 229
+
+
+Plot saved to: plot/petr3_4_min/tft/total_profit_vs_threshold.png
+Plot saved to: plot/petr3_4_min/tft/sharpe_ratio_vs_threshold.png
+Plot saved to: plot/petr3_4_min/tft/num_trades_vs_threshold.png
+Plot saved to: plot/petr3_4_min/tft/profit_per_trade_vs_threshold.png
+Plot saved to: plot/petr3_4_min/tft/confusion_matrices_pure_forcasting.png
+Plot saved to: plot/petr3_4_min/tft/confusion_matrices_mean_reversion.png
+Plot saved to: plot/petr3_4_min/tft/confusion_matrices_hybrid.png
+Plot saved to: plot/petr3_4_min/tft/confusion_matrices_ground_truth.png
+Plot saved to: plot/petr3_4_min/tft/accuracy_vs_threshold.png
+Plot saved to: plot/petr3_4_min/tft/hitrate_summary_best_sharpe.png
+Plot saved to: plot/petr3_4_min/tft/classification_curves_pure_forcasting.png
+Plot saved to: plot/petr3_4_min/tft/classification_curves_mean_reversion.png
+Plot saved to: plot/petr3_4_min/tft/classification_curves_hybrid.png
+Plot saved to: plot/petr3_4_min/tft/classification_curves_ground_truth.png
+Plot saved to: plot/petr3_4_min/tft/cumulative_pnl_best_sharpe.png
+Plot saved to: plot/petr3_4_min/tft/cumulative_pnl_best_profit.png
+Plot saved to: plot/petr3_4_min/tft/trade_return_distribution.png
+Plot saved to: plot/petr3_4_min/tft/model_performance_curves.png
+Predictions saved to: plot/petr3_4_min/tft/predictions.pkl
+Metrics saved to: plot/petr3_4_min/tft/metrics.csv
+Strategy results saved to: plot/petr3_4_min/tft/strategies.pkl
+
+python run_trading_strategy.py --sl --sl_model transformer --data_path dataset/petr3_4_min.csv --n_epochs 3
+2026-04-26 11:08:49.093738: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-04-26 11:08:50.271092: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+============================================================
+PAIR ANALYSIS REPORT -- petr3/petr4
+============================================================
+Pearson Correlation : r = 0.9801  (p = 0.0000e+00)
+
+Engle-Granger Test  : stat = -3.7792  (p = 1.4445e-02)
+  Critical values   : 1% = -3.8966  5% = -3.3362  10% = -3.0445
+  Result            : COINTEGRATED (p < 0.05)
+  Hedge ratio (β)   : 0.992447
+
+ADF on Spread       : stat = -3.7792  (p = 3.1274e-03)  lags = 28
+  Critical values   : 1% = -3.4304  5% = -2.8616  10% = -2.5668
+  Result            : Spread IS stationary (mean-reversion justified)
+
+Mean-Reversion      : half-life = 45058.3 bars (~180233 min)  (λ = -0.000015)
+============================================================
+[Hedge ratio] difference = petr3 - 0.992447 * petr4
+[Half-life] Fallback to ADF lags: INPUT_CHUNK_LENGTH = 28 bars (half-life = 45058.3 exceeds max safe 9532)
+[σ-thresholds] σ = 0.00069330  →  thresholds = [0.0, 0.00034665, 0.0006933, 0.00138659]
+Plot saved to: plot/petr3_4_min/pair_analysis/rolling_correlation.png
+Plot saved to: plot/petr3_4_min/pair_analysis/spread_with_bands.png
+Pair analysis CSV saved to: plot/petr3_4_min/pair_analysis/pair_analysis_results.csv
+/home/joprieto/ml_pairs_trading/.venv/lib/python3.12/site-packages/torch/nn/modules/transformer.py:382: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.self_attn.batch_first was not True(use batch_first for better inference performance)
+  warnings.warn(
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+`Trainer.fit` stopped: `max_epochs=3` reached.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+Plot saved to: plot/petr3_4_min/transformer/predictions_vs_true.png
+Plot saved to: plot/petr3_4_min/transformer/error_distribution.png
+Plot saved to: plot/petr3_4_min/transformer/correlation_heatmap.png
+Prediction Error: {'RMSE': 0.009378201628252418, 'MASE': 147.7073040336143, 'MAPE': 0.5631278447237049, 'sMAPE': 0.5603344894391696}
+
+
+Plot saved to: plot/petr3_4_min/transformer/metrics_plot.png
+_____Total Profits_____
+Total Profits - pure forcasting strategy = [13.364416566116033, 13.631650772184889, 13.247045904357458, 11.843858228463022]
+Best Trade Threshold - pure forcasting strategy = 0.00034665
+Total Profits - mean reversion strategy = [23.31694445224075, 22.8845653430151, 22.136150352179154, 19.881382553225006]
+Best Trade Threshold - mean reversion strategy = 0.0
+Total Profits - hybrid strategy = [45.420473725381186, 34.96122467326003, 22.094479479556448, 7.1670020979802525]
+Best Trade Threshold - hybrid strategy = 0.0
+Total Profits - ground truth strategy = [264.8367465001111, 229.42854041744093, 155.85407021656002, 50.593073707923885]
+Best Trade Threshold - ground truth strategy = 0.0
+Total Profits - momentum strategy = [3.0158853793347604, 3.1667345315036655, 2.988877341890229, 1.978238160709403]
+Best Trade Threshold - momentum strategy = 0.00034665
+
+
+_____Profits per Trade_____
+Profits per Trade - pure forcasting strategy = [0.0007019126347750017, 0.0007595503857015038, 0.0007833853284658462, 0.0007866014630047833]
+Profits per Trade - mean reversion strategy = [0.0012246294355168462, 0.0012695309743157163, 0.001300214411288056, 0.0013037827105531513]
+Profits per Trade - hybrid strategy = [0.004708248546219673, 0.006286859319054132, 0.008420152240684622, 0.014276896609522416]
+Profits per Trade - ground truth strategy = [0.014498097470855153, 0.020914178707150496, 0.029434196452608124, 0.04777438499331812]
+Profits per Trade - momentum strategy = [0.00015839734135161557, 0.00017663624115928523, 0.00017683572014496682, 0.00013127866220116817]
+
+
+_____Total Profits Statistics_____
+Total Profits Std Dev - pure forcasting strategy = [2.509648548369702, 2.5910705554631788, 2.5317530390885072, 2.2747216417214484]
+Total Profits Std Error - pure forcasting strategy = [0.0793620553938351, 0.08193684533461285, 0.08006106076572989, 0.07193301430717276]
+Total Profits Confidence - pure forcasting strategy = [array([ 8.63406486, 18.35039505]), array([ 8.53522366, 18.46582784]), array([ 8.66755414, 18.78836748]), array([ 7.71970008, 16.52563534])]
+Total Profits Std Dev - mean reversion strategy = [3.0224353129697645, 2.9112058239165735, 2.777394880663124, 2.435039952441588]
+Total Profits Std Error - mean reversion strategy = [0.09557779669508311, 0.09206041141123461, 0.08782893784587019, 0.07700272443223506]
+Total Profits Confidence - mean reversion strategy = [array([17.39162942, 28.95245016]), array([16.90760656, 28.64472864]), array([16.87457576, 27.75418832]), array([15.06112985, 24.66633837])]
+Total Profits Std Dev - hybrid strategy = [2.250701092223233, 1.9091178774786108, 1.642983647114946, 1.0364479745550985]
+Total Profits Std Error - hybrid strategy = [0.071173417836541, 0.06037160814578684, 0.051955704832935615, 0.03277536275862353]
+Total Profits Confidence - hybrid strategy = [array([41.09521092, 50.07027017]), array([31.36643547, 38.7966826 ]), array([19.04176353, 25.27038728]), array([5.27146195, 9.26834485])]
+Total Profits Std Dev - ground truth strategy = [4.480800648759188, 4.467568214208222, 4.453995641076777, 3.3613479051835644]
+Total Profits Std Error - ground truth strategy = [0.14169535791239163, 0.14127691159069, 0.14084770914264433, 0.10629515388615765]
+Total Profits Confidence - ground truth strategy = [array([255.8524878 , 273.34268547]), array([220.8043861 , 238.53238733]), array([147.18478701, 164.26327127]), array([44.42781057, 57.42990559])]
+Total Profits Std Dev - momentum strategy = [2.3401399973553842, 2.2015041003200766, 2.1560702138185, 2.078186300342495]
+Total Profits Std Error - momentum strategy = [0.07400172435303422, 0.06961767235211265, 0.06818092670912704, 0.06571802111241046]
+Total Profits Confidence - momentum strategy = [array([-1.4285416 ,  8.11358248]), array([-0.91698565,  7.42472747]), array([-1.33033403,  7.25700147]), array([-1.8318745 ,  6.16376004])]
+
+
+_____Profits per Trade Statistics_____
+Profits per Trade Std Dev - pure forcasting strategy = [0.0001407309703001989, 0.0001450450461753126, 0.00013752594997373127, 0.00014832155598275263]
+Profits per Trade Std Error - pure forcasting strategy = [4.450304034741386e-06, 4.586727092382821e-06, 4.348952392953645e-06, 4.690339430056722e-06]
+Profits per Trade Confidence Interval - pure forcasting strategy = [array([0.00043026, 0.00098701]), array([0.00049436, 0.00104389]), array([0.00050743, 0.00106776]), array([0.00049488, 0.00107544])]
+Profits per Trade Std Dev - mean reversion strategy = [0.00015584254217822026, 0.00016681635022769786, 0.00015635874827593305, 0.00015901180807716575]
+Profits per Trade Std Error - mean reversion strategy = [4.928173896340344e-06, 5.275196176758733e-06, 4.9444977664487415e-06, 5.028394883854031e-06]
+Profits per Trade Confidence Interval - mean reversion strategy = [array([0.00095677, 0.00155342]), array([0.00093275, 0.00159683]), array([0.00100919, 0.00160691]), array([0.00101546, 0.00162538])]
+Profits per Trade Std Dev - hybrid strategy = [0.0002253740680876757, 0.0003224345550985608, 0.0006161774029642605, 0.0020164566826212055]
+Profits per Trade Std Error - hybrid strategy = [7.126953806949241e-06, 1.0196275904545093e-05, 1.9485240360944504e-05, 6.376595920150278e-05]
+Profits per Trade Confidence Interval - hybrid strategy = [array([0.00425006, 0.0051296 ]), array([0.00566196, 0.00691878]), array([0.00721112, 0.00960774]), array([0.01061368, 0.01826515])]
+Profits per Trade Std Dev - ground truth strategy = [0.00024184784509165958, 0.0004146003932230711, 0.0008451352504575691, 0.003104354645846534]
+Profits per Trade Std Error - ground truth strategy = [7.647900376932179e-06, 1.3110815613863435e-05, 2.672552322342779e-05, 9.816831345800415e-05]
+Profits per Trade Confidence Interval - ground truth strategy = [array([0.01403715, 0.01498428]), array([0.02009828, 0.02170341]), array([0.02780812, 0.03113143]), array([0.04174127, 0.05404489])]
+Profits per Trade Std Dev - momentum strategy = [0.00011577888523313766, 0.00012043871856928376, 0.00012205206867169889, 0.0001321910482736375]
+Profits per Trade Std Error - momentum strategy = [3.661249822919499e-06, 3.808606691509526e-06, 3.859625301378503e-06, 4.180247988299637e-06]
+Profits per Trade Confidence Interval - momentum strategy = [array([-4.69997905e-05,  3.94777233e-04]), array([-3.65057309e-05,  4.16239453e-04]), array([-3.83995636e-05,  4.39572426e-04]), array([-0.00012563,  0.00039411])]
+
+
+_____Sharpe Ratios_____
+Sharpe Ratios - pure forcasting strategy = [0.03202075191969332, 0.03340223658294347, 0.03333654379671207, 0.03152313199329235]
+Safest Trade Threshold - pure forcasting strategy = 0.00034665
+Sharpe Ratios - mean reversion strategy = [0.05592535201249339, 0.05619085592538149, 0.05571573525400179, 0.052655732212244004]
+Safest Trade Threshold - mean reversion strategy = 0.00034665
+Sharpe Ratios - hybrid strategy = [0.14681921706147413, 0.13362251593905441, 0.1023715055132211, 0.052248694786170724]
+Safest Trade Threshold - hybrid strategy = 0.0
+Sharpe Ratios - ground truth strategy = [0.8202952127278711, 0.709613041636654, 0.47780834157720564, 0.19346144592612666]
+Safest Trade Threshold - ground truth strategy = 0.0
+Sharpe Ratios - momentum strategy = [0.0072224600369377445, 0.007765185545558127, 0.007510694091848355, 0.00526018597927638]
+Safest Trade Threshold - momentum strategy = 0.00034665
+
+
+_____Number of Trades_____
+pure forcasting strategy: trades made = [19040, 17947, 16910, 15057], trades not made = [0, 1093, 2130, 3983]
+mean reversion strategy: trades made = [19040, 18026, 17025, 15249], trades not made = [0, 1014, 2015, 3791]
+hybrid strategy: trades made = [9647, 5561, 2624, 502], trades not made = [9393, 13479, 16416, 18538]
+ground truth strategy: trades made = [18267, 10970, 5295, 1059], trades not made = [773, 8070, 13745, 17981]
+momentum strategy: trades made = [19040, 17928, 16902, 15069], trades not made = [0, 1112, 2138, 3971]
+
+
+_____Confusion Matrix_____
+pure forcasting strategy v/s ground truth for thresold = 0.0: TP = 4895, FP = 4610, FN = 4297, TN = 4465
+pure forcasting strategy v/s ground truth for thresold = 0.00034665: TP = 4640, FP = 4365, FN = 4008, TN = 4214
+pure forcasting strategy v/s ground truth for thresold = 0.0006933: TP = 4385, FP = 4142, FN = 3757, TN = 3959
+pure forcasting strategy v/s ground truth for thresold = 0.00138659: TP = 3946, FP = 3717, FN = 3333, TN = 3469
+mean reversion strategy v/s ground truth for thresold = 0.0: TP = 4974, FP = 4489, FN = 4218, TN = 4586
+mean reversion strategy v/s ground truth for thresold = 0.00034665: TP = 4727, FP = 4276, FN = 3954, TN = 4339
+mean reversion strategy v/s ground truth for thresold = 0.0006933: TP = 4476, FP = 4033, FN = 3744, TN = 4106
+mean reversion strategy v/s ground truth for thresold = 0.00138659: TP = 4037, FP = 3608, FN = 3361, TN = 3638
+hybrid strategy v/s ground truth for thresold = 0.0: TP = 2932, FP = 1883, FN = 1743, TN = 2705
+hybrid strategy v/s ground truth for thresold = 0.00034665: TP = 1728, FP = 961, FN = 982, TN = 1691
+hybrid strategy v/s ground truth for thresold = 0.0006933: TP = 856, FP = 422, FN = 427, TN = 838
+hybrid strategy v/s ground truth for thresold = 0.00138659: TP = 164, FP = 72, FN = 73, TN = 184
+
+
+Plot saved to: plot/petr3_4_min/transformer/total_profit_vs_threshold.png
+Plot saved to: plot/petr3_4_min/transformer/sharpe_ratio_vs_threshold.png
+Plot saved to: plot/petr3_4_min/transformer/num_trades_vs_threshold.png
+Plot saved to: plot/petr3_4_min/transformer/profit_per_trade_vs_threshold.png
+Plot saved to: plot/petr3_4_min/transformer/confusion_matrices_pure_forcasting.png
+Plot saved to: plot/petr3_4_min/transformer/confusion_matrices_mean_reversion.png
+Plot saved to: plot/petr3_4_min/transformer/confusion_matrices_hybrid.png
+Plot saved to: plot/petr3_4_min/transformer/confusion_matrices_ground_truth.png
+Plot saved to: plot/petr3_4_min/transformer/accuracy_vs_threshold.png
+Plot saved to: plot/petr3_4_min/transformer/hitrate_summary_best_sharpe.png
+Plot saved to: plot/petr3_4_min/transformer/classification_curves_pure_forcasting.png
+Plot saved to: plot/petr3_4_min/transformer/classification_curves_mean_reversion.png
+Plot saved to: plot/petr3_4_min/transformer/classification_curves_hybrid.png
+Plot saved to: plot/petr3_4_min/transformer/classification_curves_ground_truth.png
+Plot saved to: plot/petr3_4_min/transformer/cumulative_pnl_best_sharpe.png
+Plot saved to: plot/petr3_4_min/transformer/cumulative_pnl_best_profit.png
+Plot saved to: plot/petr3_4_min/transformer/trade_return_distribution.png
+Plot saved to: plot/petr3_4_min/transformer/model_performance_curves.png
+Predictions saved to: plot/petr3_4_min/transformer/predictions.pkl
+Metrics saved to: plot/petr3_4_min/transformer/metrics.csv
+Strategy results saved to: plot/petr3_4_min/transformer/strategies.pkl

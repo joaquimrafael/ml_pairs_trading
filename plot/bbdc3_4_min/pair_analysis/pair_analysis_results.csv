@@ -1,0 +1,2 @@
+pair_name,pearson_r,pearson_p_value,eg_statistic,eg_p_value,eg_crit_1pct,eg_crit_5pct,eg_crit_10pct,cointegrated,hedge_ratio_beta,adf_statistic,adf_p_value,adf_lags_used,adf_crit_1pct,adf_crit_5pct,adf_crit_10pct,spread_stationary,half_life_bars,ar1_lambda
+bbdc4/bbdc3,0.9822405828807366,0.0,-3.086215879854321,0.09110501138495247,-3.896588110854968,-3.336212629346272,-3.044507355089227,False,1.200486058115476,-3.0862352430653175,0.02758875466746187,39,-3.430438481992947,-2.8615791075025,-2.5667908155816246,True,3920.4639304683396,-0.00017680233585955777
