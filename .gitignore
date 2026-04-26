@@ -6,3 +6,4 @@ models/**/*
 *.vocab
 *.venv
 *.env
+CLAUDE.*
