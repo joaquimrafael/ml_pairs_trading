@@ -44,16 +44,22 @@ def run_sl_based_trading_strategy(model_name, model_config, trade_thresholds):
     # Use computed half-life as INPUT_CHUNK_LENGTH.
     # Fallback to ADF lags when half-life is unreliable (λ ≈ 0 → half-life explodes).
     # Also capped to fit Darts validation split (10% of data).
+    # Hard cap at 512 bars: LSTM BPTT memory scales with sequence_length × batch_size;
+    # at batch_size=1024, sequences >512 cause OOM on 8 GB GPUs.
     hl = analysis_results.get("half_life_bars")
     adf_lags = analysis_results.get("adf_lags_used", 50)
     val_size = int(len(dataProcessor.data_df) * 0.1)  # mirrors split_and_scale_data validation_ratio=0.1
     max_safe = max(5, val_size - model_config.OUTPUT_CHUNK_LENGTH - 1)
+    max_memory_safe = 512  # hard cap: prevents LSTM OOM for pairs with large half-lives
 
     if hl is not None and hl <= max_safe:
-        window = max(5, int(round(hl)))
-        print(f"[Half-life] INPUT_CHUNK_LENGTH set to {window} bars (half-life = {hl:.1f})")
+        window = max(5, min(int(round(hl)), max_memory_safe))
+        if int(round(hl)) > max_memory_safe:
+            print(f"[Half-life] INPUT_CHUNK_LENGTH capped at {window} bars (half-life = {hl:.1f} exceeds memory cap {max_memory_safe})")
+        else:
+            print(f"[Half-life] INPUT_CHUNK_LENGTH set to {window} bars (half-life = {hl:.1f})")
     else:
-        window = min(max(5, adf_lags), max_safe)
+        window = min(max(5, adf_lags), max_safe, max_memory_safe)
         reason = f"half-life = {hl:.1f} exceeds max safe {max_safe}" if hl is not None else "mean-reversion not detected"
         print(f"[Half-life] Fallback to ADF lags: INPUT_CHUNK_LENGTH = {window} bars ({reason})")
 
